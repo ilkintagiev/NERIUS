@@ -4,180 +4,413 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ИнвестСклад - Инвестиции в металл</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
+      /* Color Palette */
       --primary-color: #3b82f6;
-      --secondary-color: #10b981;
-      --background-color: #1a1a2e;
-      --surface-color: #232338;
-      --text-color: #e5e7eb;
-      --subtext-color: #9ca3af;
+      --secondary-color: #14b8a6;
+      --background-color: #0f172a;
+      --surface-color: #1e293b;
+      --text-color: #f1f5f9;
+      --subtext-color: #94a3b8;
       --accent-color: #60a5fa;
-      --error-color: #ef4444;
-      --font-family: 'Poppins', sans-serif;
+      --error-color: #f43f5e;
+      --success-color: #10b981;
+      --font-family: 'Inter', sans-serif;
       --gradient-bg: linear-gradient(135deg, #3b82f6, #60a5fa);
+      --gradient-accent: linear-gradient(135deg, #14b8a6, #60a5fa);
+      /* Animations */
+      --transition: all 0.3s ease;
+      --shadow: 0 8px 24px rgba(0,0,0,0.2);
+      --shadow-hover: 0 12px 32px rgba(0,0,0,0.3);
     }
+
     body {
       margin: 0;
       font-family: var(--font-family);
       background-color: var(--background-color);
       color: var(--text-color);
-      transition: all 0.4s ease;
+      transition: var(--transition);
+      overflow-x: hidden;
+      position: relative;
     }
+
     body.light {
-      --background-color: #f3f4f6;
+      --background-color: #f1f5f9;
       --surface-color: #ffffff;
-      --text-color: #1f2937;
-      --subtext-color: #6b7280;
+      --text-color: #1e293b;
+      --subtext-color: #64748b;
       --accent-color: #3b82f6;
       --gradient-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
+      --gradient-accent: linear-gradient(135deg, #2dd4bf, #3b82f6);
+      --shadow: 0 8px 24px rgba(0,0,0,0.1);
+      --shadow-hover: 0 12px 32px rgba(0,0,0,0.15);
     }
-    .section { padding: 24px; }
+
+    /* Preloader */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--background-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    #preloader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid var(--subtext-color);
+      border-top: 6px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .preloader-text {
+      margin-top: 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--accent-color);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* Particles Background (Dark Theme Only) */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      display: none;
+    }
+
+    body:not(.light) #particles {
+      display: block;
+    }
+
+    /* General Styles */
+    .section {
+      padding: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
     h1, h2, h3, h4, h5, h6 { margin: 0; }
-    a { color: var(--primary-color); text-decoration: none; cursor: pointer; }
+
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    a:hover { color: var(--accent-color); }
+
+    /* Header */
     .header {
       display: flex;
       align-items: center;
-      padding: 16px 24px;
+      padding: 20px 32px;
       background: var(--gradient-bg);
       color: #fff;
-      font-size: 20px;
-      font-weight: 500;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border-radius: 0 0 12px 12px;
+      font-size: 22px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      border-radius: 0 0 16px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      animation: gradientShift 10s ease infinite;
     }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .header .back-button {
       background: none;
       border: none;
       color: #fff;
-      font-size: 28px;
+      font-size: 32px;
       margin-right: 16px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: var(--transition);
     }
-    .header .back-button:hover { transform: scale(1.1); }
+
+    .header .back-button:hover {
+      transform: scale(1.1);
+      color: var(--accent-color);
+    }
+
     .header .title { flex: 1; }
+
     .header .notif-button {
       background: none;
       border: none;
       color: #fff;
-      font-size: 24px;
+      font-size: 28px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: var(--transition);
     }
-    .header .notif-button:hover { transform: scale(1.1); }
+
+    .header .notif-button:hover {
+      transform: scale(1.1);
+      color: var(--accent-color);
+    }
+
+    /* Greeting Bar */
     .greeting-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 22px;
-      font-weight: 500;
-      margin-bottom: 12px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
     }
+
     .greeting-bar .notify-icon {
-      font-size: 26px;
+      font-size: 28px;
       cursor: pointer;
-      transition: color 0.3s;
+      transition: var(--transition);
     }
-    .greeting-bar .notify-icon:hover { color: var(--accent-color); }
+
+    .greeting-bar .notify-icon:hover {
+      color: var(--accent-color);
+      transform: rotate(15deg);
+    }
+
     .sub-greeting {
       font-size: 16px;
       color: var(--subtext-color);
-      margin-bottom: 24px;
+      margin-bottom: 32px;
+      font-weight: 400;
     }
+
+    /* Portfolio Summary */
     .portfolio-summary {
       background: var(--surface-color);
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 24px;
+      padding: 24px;
+      border-radius: 20px;
+      margin-bottom: 32px;
       font-size: 16px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
     }
-    .portfolio-summary:hover { transform: translateY(-4px); }
-    .portfolio-summary div { margin: 10px 0; }
+
+    .portfolio-summary:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .portfolio-summary div {
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .portfolio-summary div::before {
+      content: '💸';
+      margin-right: 8px;
+      font-size: 18px;
+    }
+
+    /* Section Title */
     .section-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 20px;
-      font-weight: 500;
-      margin: 24px 0 16px;
+      font-size: 22px;
+      font-weight: 600;
+      margin: 32px 0 20px;
     }
+
     .section-title .view-all {
       font-size: 16px;
       color: var(--primary-color);
       cursor: pointer;
-      transition: color 0.3s;
+      transition: var(--transition);
     }
-    .section-title .view-all:hover { color: var(--accent-color); }
+
+    .section-title .view-all:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+
+    /* Offer Card */
     .offer-card {
       background: var(--surface-color);
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 16px;
+      padding: 24px;
+      border-radius: 20px;
+      margin-bottom: 20px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
     }
+
     .offer-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      background: #2d2d44;
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+      background: #334155;
     }
-    body.light .offer-card:hover { background: #f9fafb; }
+
+    body.light .offer-card:hover {
+      background: #f8fafc;
+    }
+
+    .offer-card::before {
+      content: '🛠️';
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 24px;
+      opacity: 0.3;
+      transition: var(--transition);
+    }
+
+    .offer-card:hover::before {
+      opacity: 0.7;
+      transform: scale(1.2);
+    }
+
     .offer-name {
-      font-size: 18px;
-      font-weight: 500;
-      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
+
     .offer-name .steel-mark {
-      font-weight: normal;
+      font-weight: 400;
       color: var(--subtext-color);
       margin-left: 8px;
+      font-size: 16px;
     }
-    .offer-prices { font-size: 15px; margin: 6px 0; }
+
+    .offer-prices {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
     .offer-info {
       font-size: 14px;
       color: var(--subtext-color);
       margin: 8px 0;
     }
-    .offer-growth { font-size: 15px; }
-    .growth-positive { color: var(--secondary-color); }
+
+    .offer-growth {
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    .growth-positive { color: var(--success-color); }
     .growth-negative { color: var(--error-color); }
+
+    /* Progress Bar for Growth */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--subtext-color);
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--success-color);
+      transition: width 1s ease;
+    }
+
+    /* Camera Feed */
     .camera-feed {
       background: var(--surface-color);
-      height: 260px;
-      border-radius: 16px;
+      height: 280px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--subtext-color);
       font-size: 16px;
-      margin: 16px 0 24px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin: 20px 0 32px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
     }
+
+    .camera-feed:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-hover);
+    }
+
     .camera-feed.live:before {
       content: '🔴 ';
       margin-right: 8px;
+      animation: blink 1.5s infinite;
     }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Details List */
     .details-list {
-      font-size: 15px;
-      margin-bottom: 16px;
+      font-size: 16px;
+      margin-bottom: 20px;
     }
-    .details-list div { margin: 8px 0; }
+
+    .details-list div {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .details-list div::before {
+      content: '📌';
+      margin-right: 8px;
+    }
+
+    /* Description */
     .description {
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.6;
       color: var(--text-color);
-      margin: 16px 0 24px;
+      margin: 20px 0 32px;
     }
+
+    /* Tab Switch */
     .tab-switch {
       display: flex;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       border-bottom: 2px solid rgba(255,255,255,0.1);
     }
+
     .tab-switch .tab {
       flex: 1;
       background: none;
@@ -186,176 +419,350 @@
       font-size: 16px;
       color: var(--subtext-color);
       cursor: pointer;
-      transition: all 0.3s;
+      transition: var(--transition);
     }
+
     .tab-switch .tab.active {
       color: var(--text-color);
       border-bottom: 3px solid var(--primary-color);
-      font-weight: 500;
+      font-weight: 600;
     }
-    .tab-switch .tab:hover { color: var(--accent-color); }
-    .camera-list { font-size: 15px; }
+
+    .tab-switch .tab:hover {
+      color: var(--accent-color);
+    }
+
+    /* Camera List */
+    .camera-list { font-size: 16px; }
+
     .camera-item {
       background: var(--surface-color);
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s;
+      padding: 16px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
     }
+
     .camera-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
     }
-    .camera-item .cam-name { font-weight: 500; }
-    .camera-item .cam-desc { color: var(--subtext-color); margin-left: 8px; }
+
+    .camera-item .cam-name {
+      font-weight: 600;
+    }
+
+    .camera-item .cam-desc {
+      color: var(--subtext-color);
+      margin-left: 8px;
+      font-size: 14px;
+    }
+
+    /* Toggle Group */
     .toggle-group {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 0;
+      padding: 16px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .toggle-group:last-child { border-bottom: none; }
-    .toggle-group label { font-size: 16px; }
+
+    .toggle-group:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-group label {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
     .switch {
       position: relative;
       display: inline-block;
-      width: 56px;
-      height: 28px;
+      width: 60px;
+      height: 32px;
     }
-    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
     .slider {
       position: absolute;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
-      background-color: #6b7280;
-      border-radius: 28px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--subtext-color);
+      border-radius: 32px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: var(--transition);
     }
+
     .slider:before {
       position: absolute;
-      content: "";
-      height: 22px;
-      width: 22px;
+      content: "🌙";
+      height: 26px;
+      width: 26px;
       left: 3px;
       bottom: 3px;
       background-color: #fff;
       border-radius: 50%;
-      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: var(--transition);
     }
+
     input:checked + .slider {
-      background: var(--gradient-bg);
+      background: var(--gradient-accent);
     }
+
     input:checked + .slider:before {
+      content: "☀️";
       transform: translateX(28px);
     }
+
+    /* Profile Section */
     .profile-section .balance {
-      font-size: 18px;
-      margin: 16px 0;
+      font-size: 20px;
+      margin: 20px 0;
     }
+
     .profile-section .balance span {
-      font-weight: 500;
-      font-size: 22px;
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--primary-color);
     }
-    .profile-section .balance-actions { margin-bottom: 24px; }
+
+    .profile-section .balance-actions {
+      margin-bottom: 32px;
+    }
+
     .profile-section .balance-actions button {
       background: var(--gradient-bg);
       border: none;
       color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
       font-size: 16px;
-      margin-right: 12px;
+      margin-right: 16px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      animation: buttonPulse 2s ease-in-out infinite;
     }
+
     .profile-section .balance-actions button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
     }
+
+    @keyframes buttonPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
     .profile-section .menu-item {
-      padding: 16px 0;
+      padding: 20px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
       font-size: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: color 0.3s;
+      transition: var(--transition);
     }
-    .profile-section .menu-item:hover { color: var(--accent-color); }
-    .profile-section .menu-item:last-child { border-bottom: none; }
-    .profile-section .menu-item.logout { color: var(--error-color); }
+
+    .profile-section .menu-item:hover {
+      color: var(--accent-color);
+    }
+
+    .profile-section .menu-item:last-child {
+      border-bottom: none;
+    }
+
+    .profile-section .menu-item.logout {
+      color: var(--error-color);
+    }
+
     .profile-section .menu-item span {
       color: var(--subtext-color);
       font-size: 20px;
     }
+
+    /* Notifications */
     .notifications-section .mark-read {
       text-align: right;
       font-size: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       color: var(--primary-color);
       cursor: pointer;
-      transition: color 0.3s;
+      transition: var(--transition);
     }
-    .notifications-section .mark-read:hover { color: var(--accent-color); }
+
+    .notifications-section .mark-read:hover {
+      color: var(--accent-color);
+    }
+
     .notification-item {
       background: var(--surface-color);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      animation: slideIn 0.5s ease;
     }
+
     .notification-item.unread {
       border-left: 4px solid var(--primary-color);
     }
+
     .notification-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
     }
+
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
     .notification-title {
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 600;
     }
+
     .notification-text {
       font-size: 14px;
       color: var(--subtext-color);
+      margin-top: 8px;
     }
+
+    .notification-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--subtext-color);
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .notification-close:hover {
+      color: var(--error-color);
+    }
+
+    /* Bottom Navigation */
     .nav-bar {
       position: fixed;
-      bottom: 0; left: 0;
+      bottom: 0;
+      left: 0;
       width: 100%;
       background: var(--surface-color);
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-      border-radius: 12px 12px 0 0;
+      padding: 12px 0;
+      box-shadow: 0 -6px 16px rgba(0,0,0,0.2);
+      border-radius: 20px 20px 0 0;
+      z-index: 10;
     }
+
     .nav-item {
       flex: 1;
       text-align: center;
       color: var(--subtext-color);
       font-size: 14px;
       cursor: pointer;
-      padding: 8px;
-      transition: all 0.3s ease;
+      padding: 10px;
+      transition: var(--transition);
     }
-    .nav-item .nav-icon { font-size: 28px; }
-    .nav-item .nav-label { margin-top: 4px; }
+
+    .nav-item .nav-icon {
+      font-size: 30px;
+    }
+
+    .nav-item .nav-label {
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
     .nav-item.active {
       color: var(--primary-color);
       background: rgba(59, 130, 246, 0.1);
-      border-radius: 8px;
+      border-radius: 12px;
     }
-    .nav-item:hover { color: var(--accent-color); }
+
+    .nav-item:hover {
+      color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    /* Modal for Investment Details */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: var(--surface-color);
+      padding: 32px;
+      border-radius: 24px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: var(--shadow);
+      position: relative;
+      animation: modalPop 0.4s ease;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--subtext-color);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--error-color);
+    }
   </style>
 </head>
 <body>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="spinner"></div>
+    <div class="preloader-text">ИнвестСклад</div>
+  </div>
+
+  <!-- Particles Background -->
+  <canvas id="particles"></canvas>
+
   <!-- Home Section -->
   <div id="home-section" class="section">
     <div class="greeting-bar">
@@ -379,6 +786,7 @@
       <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 10 т • Срок: ≈2-8 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 91%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
       <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
@@ -386,6 +794,7 @@
       <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 5 т • Срок: ≈3-10 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 125%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
       <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
@@ -393,6 +802,7 @@
       <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 8 т • Срок: ≈4-12 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 113%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
       <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
@@ -400,6 +810,7 @@
       <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 12 т • Срок: ≈1-6 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 150%;"></div></div>
     </div>
   </div>
   <!-- Catalog Section -->
@@ -416,6 +827,7 @@
       <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 10 т • Срок: ≈2-8 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 91%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
       <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
@@ -423,6 +835,7 @@
       <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 5 т • Срок: ≈3-10 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 125%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
       <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
@@ -430,6 +843,7 @@
       <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 8 т • Срок: ≈4-12 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 113%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
       <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
@@ -437,6 +851,7 @@
       <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 12 т • Срок: ≈1-6 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 150%;"></div></div>
     </div>
     <!-- Additional offers in catalog not shown on main recommended -->
     <div class="offer-card" onclick="openDetail('armatura12')">
@@ -445,6 +860,7 @@
       <div class="offer-prices">Цена продажи: <b>33 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 20 т • Срок: ≈4-10 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('balka20')">
       <div class="offer-name">Балка 20<span class="steel-mark">09Г2С</span></div>
@@ -452,6 +868,7 @@
       <div class="offer-prices">Цена продажи: <b>82 500 ₽/т</b></div>
       <div class="offer-info">Доступно: 4 т • Срок: ≈6-14 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
     </div>
   </div>
   <!-- Portfolio Section -->
@@ -504,7 +921,7 @@
       </div>
     </div>
   </div>
-  <!-- Investment Details Section -->
+  <!-- Investment Details Section (Hidden, used for modal) -->
   <div id="detail-section" class="section" style="display:none;">
     <div class="header">
       <button class="back-button" onclick="backFromDetail()">‹</button>
@@ -525,6 +942,27 @@
         Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса в строительстве.
       </div>
       <div class="camera-feed live" id="detail-camera">
+        Прямая трансляция со склада
+      </div>
+    </div>
+  </div>
+  <!-- Modal for Investment Details -->
+  <div id="detail-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeDetailModal()">✕</button>
+      <div class="offer-name" id="modal-detail-name">Труба 325<span class="steel-mark" id="modal-detail-steel">ст.45</span></div>
+      <div class="offer-info" id="modal-detail-status">В процессе продажи</div>
+      <div class="details-list">
+        <div id="modal-detail-volume">Объем: 8 т</div>
+        <div id="modal-detail-buyprice">Цена закупа: 55 700 ₽/т</div>
+        <div id="modal-detail-sellprice">Ожидаемая цена продажи: 62 000 ₽/т</div>
+        <div id="modal-detail-purchase-date">Дата покупки: 01.03.2025</div>
+        <div id="modal-detail-estimated-date">Ожидаемая дата продажи: ~2 недели</div>
+      </div>
+      <div class="description" id="modal-detail-description">
+        Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса в строительстве.
+      </div>
+      <div class="camera-feed live" id="modal-detail-camera">
         Прямая трансляция со склада
       </div>
     </div>
@@ -582,7 +1020,7 @@
       <button>Пополнить</button>
       <button>Вывести</button>
     </div>
-    <div class="offer-name" style="font-weight: 500; margin-top: 12px; margin-bottom: 8px;">Настройки</div>
+    <div class="offer-name" style="font-weight: 600; margin-top: 12px; margin-bottom: 8px;">Настройки</div>
     <div class="toggle-group">
       <label for="darkmode-toggle">Темная тема</label>
       <label class="switch">
@@ -617,14 +1055,17 @@
     <div class="notification-item unread">
       <div class="notification-title">Инвестиция продана</div>
       <div class="notification-text">Ваша инвестиция Труба 159 была успешно продана.</div>
+      <button class="notification-close" onclick="closeNotification(this)">✕</button>
     </div>
     <div class="notification-item unread">
       <div class="notification-title">Цена изменилась</div>
       <div class="notification-text">Цена продажи для Труба 245 обновлена.</div>
+      <button class="notification-close" onclick="closeNotification(this)">✕</button>
     </div>
     <div class="notification-item">
       <div class="notification-title">Новая инвестиция</div>
       <div class="notification-text">Добавлено новое предложение: Балка 20.</div>
+      <button class="notification-close" onclick="closeNotification(this)">✕</button>
     </div>
   </div>
   <!-- Bottom Navigation Bar -->
@@ -647,108 +1088,174 @@
     </div>
   </div>
   <script>
-    var currentSection = 'home-section';
-    var lastSection = 'home-section'; // for tracking back navigation
-
+    // Theme Management
     function toggleTheme() {
       document.body.classList.toggle('light');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
     }
 
+    // Load saved theme
+    window.addEventListener('load', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light');
+        document.getElementById('darkmode-toggle').checked = false;
+      } else {
+        document.getElementById('darkmode-toggle').checked = true;
+      }
+    });
+
+    // Preloader
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+      }, 1000);
+    });
+
+    // Particles Background
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particlesArray = [];
+    const numberOfParticles = 100;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+
+      draw() {
+        ctx.fillStyle = 'rgba(100, 116, 139, 0.3)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+      }
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Original JavaScript
+    var currentSection = 'home-section';
+    var lastSection = 'home-section';
+
     function showSection(sectionId) {
-      // If trying to show current section again, do nothing
-      if(sectionId === currentSection) return;
-      // Hide current section
+      if (sectionId === currentSection) return;
       document.getElementById(currentSection).style.display = 'none';
-      // Show target section
       document.getElementById(sectionId).style.display = 'block';
-      // Handle bottom nav active state
-      var navIds = ['home','portfolio','cameras','profile'];
-      if(navIds.some(id => sectionId.startsWith(id))) {
-        // It's a main section
-        // Remove active from all nav
+      var navIds = ['home', 'portfolio', 'cameras', 'profile'];
+      if (navIds.some(id => sectionId.startsWith(id))) {
         navIds.forEach(id => {
           var navItem = document.getElementById('nav-' + id);
-          if(navItem) navItem.classList.remove('active');
+          if (navItem) navItem.classList.remove('active');
         });
-        // Add active to corresponding nav
-        var secName = sectionId.split('-')[0]; // 'home' from 'home-section'
+        var secName = sectionId.split('-')[0];
         var newNav = document.getElementById('nav-' + secName);
-        if(newNav) newNav.classList.add('active');
+        if (newNav) newNav.classList.add('active');
       }
-      // If switching to a sub-section (detail, catalog, notifications), preserve nav highlight
-      // Back navigation: set lastSection for detail or notifications
-      if(sectionId === 'catalog-section' || sectionId === 'detail-section' || sectionId === 'notifications-section') {
+      if (sectionId === 'catalog-section' || sectionId === 'notifications-section') {
         lastSection = currentSection;
       }
-      // Update current
       currentSection = sectionId;
     }
 
     function openDetail(itemId) {
-      // find item in our data (since we have small set, use if/else)
-      var name='', steel='', status='', volume='', buyPrice='', sellPrice='', purchaseDate='', estSellDate='', description='';
-      if(itemId === 'truba245') {
+      var name = '', steel = '', status = '', volume = '', buyPrice = '', sellPrice = '', purchaseDate = '', estSellDate = '', description = '';
+      if (itemId === 'truba245') {
         name = 'Труба 245'; steel = 'ст.3'; status = 'На хранении';
         volume = '10 т'; buyPrice = '55 000 ₽/т'; sellPrice = '60 000 ₽/т';
         purchaseDate = '01.01.2025'; estSellDate = '≈5 недель';
         description = 'Стальная труба диаметром 245 мм, хранится на складе №3. Продажа планируется после роста цены.';
-      } else if(itemId === 'truba159') {
+      } else if (itemId === 'truba159') {
         name = 'Труба 159'; steel = 'ст.20';
-        // Если инвестиция уже завершена
         status = 'Продано';
         volume = '5 т'; buyPrice = '48 000 ₽/т'; sellPrice = '54 000 ₽/т';
         purchaseDate = '15.12.2024'; estSellDate = 'Продано 10.05.2025';
         description = 'Стальная труба диаметром 159 мм. Инвестиция завершена, товар был продан с прибылью.';
-      } else if(itemId === 'truba325') {
+      } else if (itemId === 'truba325') {
         name = 'Труба 325'; steel = 'ст.45'; status = 'В процессе продажи';
         volume = '8 т'; buyPrice = '55 700 ₽/т'; sellPrice = '62 000 ₽/т';
         purchaseDate = '01.03.2025'; estSellDate = '≈2 недели';
         description = 'Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса.';
-      } else if(itemId === 'truba114') {
+      } else if (itemId === 'truba114') {
         name = 'Труба 114'; steel = 'ст.3'; status = 'На хранении';
         volume = '12 т'; buyPrice = '40 000 ₽/т'; sellPrice = '46 000 ₽/т';
         purchaseDate = '20.02.2025'; estSellDate = '≈3 недели';
         description = 'Стальная труба диаметром 114 мм, хранится на складе №1. Ожидается увеличение стоимости в ближайшие недели.';
-      } else if(itemId === 'armatura12') {
+      } else if (itemId === 'armatura12') {
         name = 'Арматура 12мм'; steel = 'A500'; status = 'На хранении';
         volume = '20 т'; buyPrice = '30 000 ₽/т'; sellPrice = '33 000 ₽/т';
         purchaseDate = '10.01.2025'; estSellDate = '≈6 недель';
         description = 'Стальная арматура диаметром 12 мм, хранится на складе. Используется в строительстве, ожидается повышение спроса.';
-      } else if(itemId === 'balka20') {
+      } else if (itemId === 'balka20') {
         name = 'Балка 20'; steel = '09Г2С'; status = 'На хранении';
         volume = '4 т'; buyPrice = '75 000 ₽/т'; sellPrice = '82 500 ₽/т';
         purchaseDate = '05.01.2025'; estSellDate = '≈8 недель';
         description = 'Стальная двутавровая балка №20, хранится на складе. Предполагается рост цены с началом строительного сезона.';
       }
-      // Populate detail fields
-      document.getElementById('detail-name').firstChild.textContent = name + ' ';
-      document.getElementById('detail-steel').textContent = steel;
-      document.getElementById('detail-status').textContent = status;
-      document.getElementById('detail-volume').textContent = 'Объем: ' + volume;
-      document.getElementById('detail-buyprice').textContent = 'Цена закупа: ' + buyPrice;
-      document.getElementById('detail-sellprice').textContent = 'Ожидаемая цена продажи: ' + sellPrice;
-      document.getElementById('detail-purchase-date').textContent = 'Дата покупки: ' + purchaseDate;
-      document.getElementById('detail-estimated-date').textContent = (status === 'Продано') ? ('Дата продажи: ' + estSellDate) : ('Ожидаемая дата продажи: ' + estSellDate);
-      document.getElementById('detail-description').textContent = description;
-      // Show detail section
-      showSection('detail-section');
+      // Populate modal fields
+      document.getElementById('modal-detail-name').firstChild.textContent = name + ' ';
+      document.getElementById('modal-detail-steel').textContent = steel;
+      document.getElementById('modal-detail-status').textContent = status;
+      document.getElementById('modal-detail-volume').textContent = 'Объем: ' + volume;
+      document.getElementById('modal-detail-buyprice').textContent = 'Цена закупа: ' + buyPrice;
+      document.getElementById('modal-detail-sellprice').textContent = 'Ожидаемая цена продажи: ' + sellPrice;
+      document.getElementById('modal-detail-purchase-date').textContent = 'Дата покупки: ' + purchaseDate;
+      document.getElementById('modal-detail-estimated-date').textContent = (status === 'Продано') ? ('Дата продажи: ' + estSellDate) : ('Ожидаемая дата продажи: ' + estSellDate);
+      document.getElementById('modal-detail-description').textContent = description;
+      // Show modal
+      document.getElementById('detail-modal').style.display = 'flex';
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detail-modal').style.display = 'none';
     }
 
     function backFromDetail() {
-      // Hide detail section
       document.getElementById('detail-section').style.display = 'none';
-      // Show previous section
       document.getElementById(lastSection).style.display = 'block';
       currentSection = lastSection;
     }
 
     function switchCameraTab(tab) {
-      // tab: 'my' or 'all'
       var myBtn = document.getElementById('cam-tab-my');
       var allBtn = document.getElementById('cam-tab-all');
       var myList = document.getElementById('cameras-my');
       var allList = document.getElementById('cameras-all');
-      if(tab === 'my') {
+      if (tab === 'my') {
         myBtn.classList.add('active'); allBtn.classList.remove('active');
         myList.style.display = 'block'; allList.style.display = 'none';
       } else {
@@ -764,13 +1271,13 @@
       var listAll = document.getElementById('portfolio-list-all');
       var listActive = document.getElementById('portfolio-list-active');
       var listCompleted = document.getElementById('portfolio-list-completed');
-      if(tab === 'all') {
+      if (tab === 'all') {
         allTab.classList.add('active'); actTab.classList.remove('active'); compTab.classList.remove('active');
         listAll.style.display = 'block'; listActive.style.display = 'none'; listCompleted.style.display = 'none';
-      } else if(tab === 'active') {
+      } else if (tab === 'active') {
         allTab.classList.remove('active'); actTab.classList.add('active'); compTab.classList.remove('active');
         listAll.style.display = 'none'; listActive.style.display = 'block'; listCompleted.style.display = 'none';
-      } else if(tab === 'completed') {
+      } else if (tab === 'completed') {
         allTab.classList.remove('active'); actTab.classList.remove('active'); compTab.classList.add('active');
         listAll.style.display = 'none'; listActive.style.display = 'none'; listCompleted.style.display = 'block';
       }
@@ -789,13 +1296,25 @@
       });
     }
 
-    // Dummy functions for unsupported actions
+    function closeNotification(button) {
+      button.parentElement.style.animation = 'slideOut 0.5s ease forwards';
+      setTimeout(() => {
+        button.parentElement.remove();
+      }, 500);
+    }
+
+    @keyframes slideOut {
+      to { transform: translateX(100px); opacity: 0; }
+    }
+
     function openSupport() {
       alert('Поддержка: функция в разработке');
     }
+
     function openPersonalData() {
       alert('Личные данные: функция в разработке');
     }
+
     function logout() {
       alert('Выход из аккаунта');
     }
