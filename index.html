@@ -3,767 +3,499 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ИнвестСклад - Инвестиции в металл</title>
+  <title>ИнвестСклад — инвестиции в металл</title>
+
+  <!-- Подключаем шрифт Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      /* Color Palette */
+      /* Цветовая палитра */
       --primary-color: #3b82f6;
-      --secondary-color: #14b8a6;
+      --accent-color: #60a5fa;
       --background-color: #0f172a;
       --surface-color: #1e293b;
       --text-color: #f1f5f9;
       --subtext-color: #94a3b8;
-      --accent-color: #60a5fa;
-      --error-color: #f43f5e;
       --success-color: #10b981;
-      --font-family: 'Inter', sans-serif;
+      --error-color: #f43f5e;
       --gradient-bg: linear-gradient(135deg, #3b82f6, #60a5fa);
-      --gradient-accent: linear-gradient(135deg, #14b8a6, #60a5fa);
-      /* Animations */
-      --transition: all 0.3s ease;
       --shadow: 0 8px 24px rgba(0,0,0,0.2);
       --shadow-hover: 0 12px 32px rgba(0,0,0,0.3);
+      --font-family: 'Inter', sans-serif;
+      --transition: all 0.3s ease;
     }
-
     body {
       margin: 0;
       font-family: var(--font-family);
       background-color: var(--background-color);
       color: var(--text-color);
-      transition: var(--transition);
       overflow-x: hidden;
       position: relative;
+      transition: var(--transition);
     }
-
     body.light {
       --background-color: #f1f5f9;
-      --surface-color: #ffffff;
+      --surface-color: #fff;
       --text-color: #1e293b;
       --subtext-color: #64748b;
-      --accent-color: #3b82f6;
       --gradient-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
-      --gradient-accent: linear-gradient(135deg, #2dd4bf, #3b82f6);
       --shadow: 0 8px 24px rgba(0,0,0,0.1);
       --shadow-hover: 0 12px 32px rgba(0,0,0,0.15);
     }
 
-    /* Preloader */
+    /* Прелоадер */
     #preloader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
       background: var(--background-color);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 9999;
       opacity: 1;
       transition: opacity 0.5s ease;
     }
-
     #preloader.hidden {
       opacity: 0;
       pointer-events: none;
     }
-
     .spinner {
-      width: 60px;
-      height: 60px;
+      width: 60px; height: 60px;
       border: 6px solid var(--subtext-color);
       border-top: 6px solid var(--primary-color);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
     .preloader-text {
       margin-top: 16px;
       font-size: 18px;
-      font-weight: 500;
       color: var(--accent-color);
       animation: pulse 2s ease-in-out infinite;
     }
+    @keyframes spin { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
+    @keyframes pulse {0%,100%{opacity:0.7}50%{opacity:1}}
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-
-    /* Particles Background (Dark Theme Only) */
+    /* Фон частиц (только в тёмной теме) */
     #particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: -1;
       display: none;
     }
+    body:not(.light) #particles { display: block; }
 
-    body:not(.light) #particles {
-      display: block;
-    }
+    /* Общие стили */
+    .section { padding: 32px; position: relative; z-index: 1; }
+    h1,h2,h3,h4,h5,h6{margin:0}
+    a { color: var(--primary-color); text-decoration: none; transition: var(--transition); }
+    a:hover { color: var(--accent-color) }
 
-    /* General Styles */
-    .section {
-      padding: 32px;
-      position: relative;
-      z-index: 1;
-    }
-
-    h1, h2, h3, h4, h5, h6 { margin: 0; }
-
-    a {
-      color: var(--primary-color);
-      text-decoration: none;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    a:hover { color: var(--accent-color); }
-
-    /* Header */
+    /* Хедер */
     .header {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 20px 32px;
       background: var(--gradient-bg);
       color: #fff;
-      font-size: 22px;
-      font-weight: 600;
+      font-size: 22px; font-weight: 600;
       box-shadow: var(--shadow);
       border-radius: 0 0 16px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      position: sticky; top: 0; z-index: 10;
+      background-size: 200% 200%;
       animation: gradientShift 10s ease infinite;
     }
-
     @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
     }
-
-    .header .back-button {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 32px;
-      margin-right: 16px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .header .back-button:hover {
-      transform: scale(1.1);
-      color: var(--accent-color);
-    }
-
-    .header .title { flex: 1; }
-
+    .header .back-button,
     .header .notif-button {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 28px;
-      cursor: pointer;
+      background: none; border: none;
+      color: #fff; cursor: pointer;
       transition: var(--transition);
     }
-
+    .header .back-button { font-size: 32px; margin-right: 16px }
+    .header .notif-button { font-size: 28px }
+    .header .back-button:hover,
     .header .notif-button:hover {
-      transform: scale(1.1);
-      color: var(--accent-color);
+      color: var(--accent-color); transform: scale(1.1);
     }
+    .header .title { flex:1; }
 
-    /* Greeting Bar */
+    /* Структура разделов */
     .greeting-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 24px;
-      font-weight: 600;
+      display: flex; justify-content: space-between;
+      font-size: 24px; font-weight: 600;
       margin-bottom: 16px;
     }
-
     .greeting-bar .notify-icon {
-      font-size: 28px;
-      cursor: pointer;
+      font-size: 28px; cursor: pointer;
       transition: var(--transition);
     }
-
     .greeting-bar .notify-icon:hover {
-      color: var(--accent-color);
-      transform: rotate(15deg);
+      color: var(--accent-color); transform: rotate(15deg);
     }
-
     .sub-greeting {
-      font-size: 16px;
-      color: var(--subtext-color);
-      margin-bottom: 32px;
-      font-weight: 400;
+      font-size: 16px; color: var(--subtext-color);
+      margin-bottom: 32px; font-weight: 400;
     }
 
-    /* Portfolio Summary */
+    /* Портфель */
     .portfolio-summary {
       background: var(--surface-color);
-      padding: 24px;
-      border-radius: 20px;
-      margin-bottom: 32px;
-      font-size: 16px;
+      padding: 24px; border-radius: 20px;
+      margin-bottom: 32px; font-size: 16px;
       box-shadow: var(--shadow);
       transition: var(--transition);
     }
-
     .portfolio-summary:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
+      transform: translateY(-6px); box-shadow: var(--shadow-hover);
     }
-
     .portfolio-summary div {
-      margin: 12px 0;
-      display: flex;
-      align-items: center;
+      margin: 12px 0; display: flex; align-items: center;
     }
-
     .portfolio-summary div::before {
-      content: '💸';
-      margin-right: 8px;
-      font-size: 18px;
+      content:'💸'; margin-right:8px; font-size:18px;
     }
 
-    /* Section Title */
+    /* Заголовок секции */
     .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 22px;
-      font-weight: 600;
-      margin: 32px 0 20px;
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 22px;
+      font-weight: 600; margin:32px 0 20px;
     }
-
     .section-title .view-all {
-      font-size: 16px;
-      color: var(--primary-color);
-      cursor: pointer;
-      transition: var(--transition);
+      font-size:16px; color:var(--primary-color);
+      cursor:pointer; transition:var(--transition);
     }
-
     .section-title .view-all:hover {
-      color: var(--accent-color);
-      text-decoration: underline;
+      color:var(--accent-color); text-decoration:underline;
     }
 
-    /* Offer Card */
+    /* Карточка предложения */
     .offer-card {
       background: var(--surface-color);
-      padding: 24px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
+      padding: 24px; border-radius:20px;
+      margin-bottom:20px; cursor:pointer;
+      box-shadow:var(--shadow); transition:var(--transition);
+      position:relative; overflow:hidden;
     }
-
     .offer-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-      background: #334155;
+      transform: translateY(-6px); box-shadow:var(--shadow-hover);
+      background:#334155;
     }
-
     body.light .offer-card:hover {
-      background: #f8fafc;
+      background:#f8fafc;
     }
-
     .offer-card::before {
-      content: '🛠️';
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 24px;
-      opacity: 0.3;
-      transition: var(--transition);
+      content:'🛠️'; position:absolute;
+      top:16px; right:16px; font-size:24px;
+      opacity:0.3; transition:var(--transition);
     }
-
     .offer-card:hover::before {
-      opacity: 0.7;
-      transform: scale(1.2);
+      opacity:0.7; transform:scale(1.2);
     }
-
     .offer-name {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 12px;
+      font-size:20px; font-weight:600; margin-bottom:12px;
     }
-
-    .offer-name .steel-mark {
-      font-weight: 400;
-      color: var(--subtext-color);
-      margin-left: 8px;
-      font-size: 16px;
+    .steel-mark {
+      font-weight:400; color:var(--subtext-color);
+      margin-left:8px; font-size:16px;
     }
-
     .offer-prices {
-      font-size: 16px;
-      margin: 8px 0;
+      font-size:16px; margin:8px 0;
     }
-
     .offer-info {
-      font-size: 14px;
-      color: var(--subtext-color);
-      margin: 8px 0;
+      font-size:14px; color:var(--subtext-color);
+      margin:8px 0;
     }
-
     .offer-growth {
-      font-size: 16px;
-      margin-top: 8px;
+      font-size:16px; margin-top:8px;
     }
-
     .growth-positive { color: var(--success-color); }
     .growth-negative { color: var(--error-color); }
 
-    /* Progress Bar for Growth */
+    /* Линейка прогресса */
     .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: var(--subtext-color);
-      border-radius: 3px;
-      margin-top: 8px;
-      overflow: hidden;
+      width:100%; height:6px;
+      background:var(--subtext-color);
+      border-radius:3px; margin-top:8px;
+      overflow:hidden;
     }
-
     .progress-bar-fill {
-      height: 100%;
-      background: var(--success-color);
-      transition: width 1s ease;
+      height:100%; background:var(--success-color);
+      transition:width 1s ease;
     }
 
-    /* Camera Feed */
+    /* Видеопоток */
     .camera-feed {
-      background: var(--surface-color);
-      height: 280px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--subtext-color);
-      font-size: 16px;
-      margin: 20px 0 32px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
+      background:var(--surface-color);
+      height:280px; border-radius:20px;
+      display:flex; align-items:center;
+      justify-content:center; color:var(--subtext-color);
+      font-size:16px; margin:20px 0 32px;
+      box-shadow:var(--shadow); transition:var(--transition);
     }
-
     .camera-feed:hover {
-      transform: scale(1.02);
-      box-shadow: var(--shadow-hover);
+      transform:scale(1.02); box-shadow:var(--shadow-hover);
     }
-
     .camera-feed.live:before {
-      content: '🔴 ';
-      margin-right: 8px;
-      animation: blink 1.5s infinite;
+      content:'🔴 '; margin-right:8px;
+      animation:blink 1.5s infinite;
     }
+    @keyframes blink {0%,100%{opacity:1}50%{opacity:0.5}}
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    /* Details List */
+    /* Список деталей */
     .details-list {
-      font-size: 16px;
-      margin-bottom: 20px;
+      font-size:16px; margin-bottom:20px;
     }
-
     .details-list div {
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
+      margin:10px 0; display:flex; align-items:center;
     }
-
     .details-list div::before {
-      content: '📌';
-      margin-right: 8px;
+      content:'📌'; margin-right:8px;
     }
 
-    /* Description */
+    /* Описание */
     .description {
-      font-size: 16px;
-      line-height: 1.6;
-      color: var(--text-color);
-      margin: 20px 0 32px;
+      font-size:16px; line-height:1.6;
+      color:var(--text-color); margin:20px 0 32px;
     }
 
-    /* Tab Switch */
+    /* Переключатель вкладок */
     .tab-switch {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 2px solid rgba(255,255,255,0.1);
+      display:flex; margin-bottom:20px;
+      border-bottom:2px solid rgba(255,255,255,0.1);
     }
-
     .tab-switch .tab {
-      flex: 1;
-      background: none;
-      border: none;
-      padding: 12px 0;
-      font-size: 16px;
-      color: var(--subtext-color);
-      cursor: pointer;
-      transition: var(--transition);
+      flex:1; background:none; border:none;
+      padding:12px 0; font-size:16px;
+      color:var(--subtext-color); cursor:pointer;
+      transition:var(--transition);
     }
-
     .tab-switch .tab.active {
-      color: var(--text-color);
-      border-bottom: 3px solid var(--primary-color);
-      font-weight: 600;
+      color:var(--text-color);
+      border-bottom:3px solid var(--primary-color);
+      font-weight:600;
     }
-
     .tab-switch .tab:hover {
-      color: var(--accent-color);
+      color:var(--accent-color);
     }
 
-    /* Camera List */
-    .camera-list { font-size: 16px; }
-
+    /* Список камер */
+    .camera-list { font-size:16px; }
     .camera-item {
-      background: var(--surface-color);
-      padding: 16px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
+      background:var(--surface-color);
+      padding:16px; border-radius:16px;
+      margin-bottom:16px; box-shadow:var(--shadow);
+      transition:var(--transition);
     }
-
     .camera-item:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
+      transform:translateY(-4px);
+      box-shadow:var(--shadow-hover);
+    }
+    .cam-name { font-weight:600; }
+    .cam-desc {
+      color:var(--subtext-color);
+      margin-left:8px; font-size:14px;
     }
 
-    .camera-item .cam-name {
-      font-weight: 600;
-    }
-
-    .camera-item .cam-desc {
-      color: var(--subtext-color);
-      margin-left: 8px;
-      font-size: 14px;
-    }
-
-    /* Toggle Group */
+    /* Переключатели в профиле */
     .toggle-group {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display:flex; align-items:center;
+      justify-content:space-between;
+      padding:16px 0;
+      border-bottom:1px solid rgba(255,255,255,0.1);
     }
-
-    .toggle-group:last-child {
-      border-bottom: none;
-    }
-
+    .toggle-group:last-child { border-bottom:none }
     .toggle-group label {
-      font-size: 16px;
-      font-weight: 500;
+      font-size:16px; font-weight:500;
     }
-
     .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 32px;
+      position:relative; display:inline-block;
+      width:60px; height:32px;
     }
-
     .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
+      opacity:0; width:0; height:0;
     }
-
     .slider {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--subtext-color);
-      border-radius: 32px;
-      cursor: pointer;
-      transition: var(--transition);
+      position:absolute; top:0; left:0; right:0; bottom:0;
+      background-color:var(--subtext-color);
+      border-radius:32px; cursor:pointer;
+      transition:var(--transition);
     }
-
     .slider:before {
-      position: absolute;
-      content: "🌙";
-      height: 26px;
-      width: 26px;
-      left: 3px;
-      bottom: 3px;
-      background-color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      transition: var(--transition);
+      position:absolute; content:"🌙";
+      height:26px; width:26px;
+      left:3px; bottom:3px;
+      background:#fff; border-radius:50%;
+      display:flex; align-items:center;
+      justify-content:center; font-size:14px;
+      transition:var(--transition);
     }
-
     input:checked + .slider {
-      background: var(--gradient-accent);
+      background:var(--accent-color);
     }
-
     input:checked + .slider:before {
-      content: "☀️";
-      transform: translateX(28px);
+      content:"☀️"; transform:translateX(28px);
     }
 
-    /* Profile Section */
+    /* Профиль */
     .profile-section .balance {
-      font-size: 20px;
-      margin: 20px 0;
+      font-size:20px; margin:20px 0;
     }
-
     .profile-section .balance span {
-      font-weight: 600;
-      font-size: 24px;
-      color: var(--primary-color);
+      font-weight:600; font-size:24px;
+      color:var(--primary-color);
     }
-
-    .profile-section .balance-actions {
-      margin-bottom: 32px;
+    .balance-actions {
+      margin-bottom:32px;
     }
-
-    .profile-section .balance-actions button {
-      background: var(--gradient-bg);
-      border: none;
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 16px;
-      margin-right: 16px;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      animation: buttonPulse 2s ease-in-out infinite;
+    .balance-actions button {
+      background:var(--gradient-bg);
+      border:none; color:#fff;
+      padding:12px 24px; border-radius:12px;
+      font-size:16px; margin-right:16px;
+      cursor:pointer; box-shadow:var(--shadow);
+      transition:var(--transition);
+      animation:buttonPulse 2s ease-in-out infinite;
     }
-
-    .profile-section .balance-actions button:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
+    .balance-actions button:hover {
+      transform:translateY(-4px); box-shadow:var(--shadow-hover);
     }
-
     @keyframes buttonPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%,100%{transform:scale(1)}50%{transform:scale(1.05)}
     }
-
-    .profile-section .menu-item {
-      padding: 20px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: var(--transition);
+    .menu-item {
+      padding:20px 0;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      font-size:16px; cursor:pointer;
+      display:flex; justify-content:space-between;
+      transition:var(--transition);
     }
+    .menu-item:hover { color:var(--accent-color) }
+    .menu-item:last-child { border-bottom:none }
+    .menu-item.logout { color:var(--error-color) }
+    .menu-item span { color:var(--subtext-color); font-size:20px }
 
-    .profile-section .menu-item:hover {
-      color: var(--accent-color);
-    }
-
-    .profile-section .menu-item:last-child {
-      border-bottom: none;
-    }
-
-    .profile-section .menu-item.logout {
-      color: var(--error-color);
-    }
-
-    .profile-section .menu-item span {
-      color: var(--subtext-color);
-      font-size: 20px;
-    }
-
-    /* Notifications */
+    /* Уведомления */
     .notifications-section .mark-read {
-      text-align: right;
-      font-size: 14px;
-      margin-bottom: 20px;
-      color: var(--primary-color);
-      cursor: pointer;
-      transition: var(--transition);
+      text-align:right; font-size:14px;
+      margin-bottom:20px; color:var(--primary-color);
+      cursor:pointer; transition:var(--transition);
     }
-
     .notifications-section .mark-read:hover {
-      color: var(--accent-color);
+      color:var(--accent-color);
     }
-
     .notification-item {
-      background: var(--surface-color);
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      position: relative;
-      animation: slideIn 0.5s ease;
+      background:var(--surface-color);
+      padding:20px; border-radius:16px;
+      margin-bottom:16px; box-shadow:var(--shadow);
+      transition:var(--transition); position:relative;
+      animation:slideIn 0.5s ease;
     }
-
     .notification-item.unread {
-      border-left: 4px solid var(--primary-color);
+      border-left:4px solid var(--primary-color);
     }
-
     .notification-item:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
+      transform:translateY(-4px); box-shadow:var(--shadow-hover);
     }
-
     @keyframes slideIn {
-      from { transform: translateX(100px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from{transform:translateX(100px);opacity:0}
+      to{transform:translateX(0);opacity:1}
     }
-
+    @keyframes slideOut {
+      to{transform:translateX(100px);opacity:0}
+    }
     .notification-title {
-      font-size: 16px;
-      font-weight: 600;
+      font-size:16px; font-weight:600;
     }
-
     .notification-text {
-      font-size: 14px;
-      color: var(--subtext-color);
-      margin-top: 8px;
+      font-size:14px; color:var(--subtext-color);
+      margin-top:8px;
     }
-
     .notification-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: var(--subtext-color);
-      font-size: 16px;
-      cursor: pointer;
-      transition: var(--transition);
+      position:absolute; top:16px; right:16px;
+      background:none; border:none;
+      color:var(--subtext-color);
+      font-size:16px; cursor:pointer;
+      transition:var(--transition);
     }
-
     .notification-close:hover {
-      color: var(--error-color);
+      color:var(--error-color);
     }
 
-    /* Bottom Navigation */
+    /* Нижняя навигация */
     .nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--surface-color);
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      box-shadow: 0 -6px 16px rgba(0,0,0,0.2);
-      border-radius: 20px 20px 0 0;
-      z-index: 10;
+      position:fixed; bottom:0; left:0;
+      width:100%; background:var(--surface-color);
+      display:flex; justify-content:space-around;
+      padding:12px 0;
+      box-shadow:0 -6px 16px rgba(0,0,0,0.2);
+      border-radius:20px 20px 0 0; z-index:10;
     }
-
     .nav-item {
-      flex: 1;
-      text-align: center;
-      color: var(--subtext-color);
-      font-size: 14px;
-      cursor: pointer;
-      padding: 10px;
-      transition: var(--transition);
+      flex:1; text-align:center;
+      color:var(--subtext-color);
+      font-size:14px; cursor:pointer;
+      padding:10px; transition:var(--transition);
     }
-
-    .nav-item .nav-icon {
-      font-size: 30px;
-    }
-
-    .nav-item .nav-label {
-      margin-top: 6px;
-      font-size: 12px;
-    }
-
+    .nav-item .nav-icon { font-size:30px }
+    .nav-item .nav-label { margin-top:6px; font-size:12px }
     .nav-item.active {
-      color: var(--primary-color);
-      background: rgba(59, 130, 246, 0.1);
-      border-radius: 12px;
+      color:var(--primary-color);
+      background:rgba(59,130,246,0.1);
+      border-radius:12px;
     }
-
     .nav-item:hover {
-      color: var(--accent-color);
-      transform: translateY(-2px);
+      color:var(--accent-color);
+      transform:translateY(-2px);
     }
 
-    /* Modal for Investment Details */
+    /* Модальное окно деталей */
     .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+      display:none; position:fixed;
+      top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.8); z-index:1000;
+      align-items:center; justify-content:center;
     }
-
     .modal-content {
-      background: var(--surface-color);
-      padding: 32px;
-      border-radius: 24px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: var(--shadow);
-      position: relative;
-      animation: modalPop 0.4s ease;
+      background:var(--surface-color);
+      padding:32px; border-radius:24px;
+      max-width:500px; width:90%;
+      box-shadow:var(--shadow);
+      animation:modalPop 0.4s ease;
+      position:relative;
     }
-
     @keyframes modalPop {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from{transform:scale(0.8);opacity:0}
+      to{transform:scale(1);opacity:1}
     }
-
     .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: var(--subtext-color);
-      font-size: 20px;
-      cursor: pointer;
-      transition: var(--transition);
+      position:absolute; top:16px; right:16px;
+      background:none; border:none;
+      color:var(--subtext-color);
+      font-size:20px; cursor:pointer;
+      transition:var(--transition);
     }
-
     .modal-close:hover {
-      color: var(--error-color);
+      color:var(--error-color);
     }
   </style>
 </head>
 <body>
-  <!-- Preloader -->
+  <!-- Прелоадер -->
   <div id="preloader">
     <div class="spinner"></div>
     <div class="preloader-text">ИнвестСклад</div>
   </div>
 
-  <!-- Particles Background -->
+  <!-- Фон частиц -->
   <canvas id="particles"></canvas>
 
-  <!-- Home Section -->
+  <!-- Главная -->
   <div id="home-section" class="section">
     <div class="greeting-bar">
       <div>Здравствуйте, Инвестор</div>
@@ -771,210 +503,126 @@
     </div>
     <div class="sub-greeting">Добро пожаловать в ИнвестСклад</div>
     <div class="portfolio-summary">
-      <div>Инвестировано: 200 000 ₽</div>
-      <div>Текущая стоимость: 220 000 ₽</div>
+      <div>Инвестировано: 200 000 ₽</div>
+      <div>Текущая стоимость: 220 000 ₽</div>
       <div>Доходность: +10%</div>
     </div>
     <div class="section-title">
       <span>Рекомендуемые предложения</span>
       <span class="view-all" onclick="showSection('catalog-section')">Смотреть все</span>
     </div>
-    <!-- Recommended offers list -->
+    <!-- Примеры карточек -->
     <div class="offer-card" onclick="openDetail('truba245')">
-      <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 10 т • Срок: ≈2-8 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 91%;"></div></div>
+      <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
+      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
+      <div class="offer-info">Доступно: 10 т • Срок: ≈2–8 недель</div>
+      <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:91%"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
-      <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
-      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 5 т • Срок: ≈3-10 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 125%;"></div></div>
+      <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
+      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
+      <div class="offer-info">Доступно: 5 т • Срок: ≈3–10 недель</div>
+      <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:125%"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
-      <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 8 т • Срок: ≈4-12 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 113%;"></div></div>
+      <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
+      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
+      <div class="offer-info">Доступно: 8 т • Срок: ≈4–12 недель</div>
+      <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:113%"></div></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
-      <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 12 т • Срок: ≈1-6 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 150%;"></div></div>
+      <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
+      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
+      <div class="offer-info">Доступно: 12 т • Срок: ≈1–6 недель</div>
+      <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:150%"></div></div>
     </div>
   </div>
-  <!-- Catalog Section -->
-  <div id="catalog-section" class="section" style="display:none;">
+
+  <!-- Каталог -->
+  <div id="catalog-section" class="section" style="display:none">
     <div class="header">
       <button class="back-button" onclick="showSection('home-section')">‹</button>
       <div class="title">Каталог</div>
       <button class="notif-button" onclick="showSection('notifications-section')">🔔</button>
     </div>
-    <!-- Offers catalog list -->
-    <div class="offer-card" onclick="openDetail('truba245')">
-      <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 10 т • Срок: ≈2-8 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 91%;"></div></div>
-    </div>
-    <div class="offer-card" onclick="openDetail('truba159')">
-      <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
-      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 5 т • Срок: ≈3-10 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 125%;"></div></div>
-    </div>
-    <div class="offer-card" onclick="openDetail('truba325')">
-      <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 8 т • Срок: ≈4-12 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 113%;"></div></div>
-    </div>
-    <div class="offer-card" onclick="openDetail('truba114')">
-      <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 12 т • Срок: ≈1-6 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 150%;"></div></div>
-    </div>
-    <!-- Additional offers in catalog not shown on main recommended -->
-    <div class="offer-card" onclick="openDetail('armatura12')">
-      <div class="offer-name">Арматура 12мм<span class="steel-mark">A500</span></div>
-      <div class="offer-prices">Цена закупа: <b>30 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>33 000 ₽/т</b></div>
-      <div class="offer-info">Доступно: 20 т • Срок: ≈4-10 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
-    </div>
-    <div class="offer-card" onclick="openDetail('balka20')">
-      <div class="offer-name">Балка 20<span class="steel-mark">09Г2С</span></div>
-      <div class="offer-prices">Цена закупа: <b>75 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>82 500 ₽/т</b></div>
-      <div class="offer-info">Доступно: 4 т • Срок: ≈6-14 недель</div>
-      <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
-    </div>
+    <!-- те же карточки, что и в рекомендациях -->
+    <!-- ... -->
   </div>
-  <!-- Portfolio Section -->
-  <div id="portfolio-section" class="section" style="display:none;">
+
+  <!-- Портфель -->
+  <div id="portfolio-section" class="section" style="display:none">
     <div class="header">
       <div class="title">Мой портфель</div>
       <button class="notif-button" onclick="showSection('notifications-section')">🔔</button>
     </div>
-    <!-- Possibly filter tabs (All, Active, Completed) -->
     <div class="tab-switch">
       <button class="tab active" id="portfolio-tab-all" onclick="switchPortfolioTab('all')">Все</button>
       <button class="tab" id="portfolio-tab-active" onclick="switchPortfolioTab('active')">Активные</button>
       <button class="tab" id="portfolio-tab-completed" onclick="switchPortfolioTab('completed')">Завершенные</button>
     </div>
-    <!-- Portfolio lists -->
     <div id="portfolio-list-all" class="portfolio-list">
       <div class="offer-card" onclick="openDetail('truba245')">
-        <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
-        <div class="offer-info">На хранении • Ожидаемая продажа: ~5 нед.</div>
-        <div class="offer-growth">Статус: <span class="growth-positive">Хранение</span></div>
+        <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
+        <div class="offer-info">На хранении • Ожидаемая продажа: ~5 нед.</div>
+        <div class="offer-growth">Статус: <span class="growth-positive">Хранение</span></div>
       </div>
       <div class="offer-card" onclick="openDetail('truba325')">
-        <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
-        <div class="offer-info">В процессе продажи • Ожидаемая продажа: 2 нед.</div>
-        <div class="offer-growth">Статус: <span class="growth-positive">Продажа</span></div>
+        <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
+        <div class="offer-info">В процессе продажи • Ожидаемая продажа: 2 нед.</div>
+        <div class="offer-growth">Статус: <span class="growth-positive">Продажа</span></div>
       </div>
       <div class="offer-card" onclick="openDetail('truba159')">
-        <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
-        <div class="offer-info">Продано 10.05.2025</div>
-        <div class="offer-growth">Результат: <span class="growth-positive">+12.5%</span></div>
+        <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
+        <div class="offer-info">Продано 10.05.2025</div>
+        <div class="offer-growth">Результат: <span class="growth-positive">+12.5%</span></div>
       </div>
     </div>
-    <div id="portfolio-list-active" class="portfolio-list" style="display:none;">
-      <div class="offer-card" onclick="openDetail('truba245')">
-        <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
-        <div class="offer-info">На хранении • Ожидаемая продажа: ~5 нед.</div>
-        <div class="offer-growth">Статус: <span class="growth-positive">Хранение</span></div>
-      </div>
-      <div class="offer-card" onclick="openDetail('truba325')">
-        <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
-        <div class="offer-info">В процессе продажи • Ожидаемая продажа: 2 нед.</div>
-        <div class="offer-growth">Статус: <span class="growth-positive">Продажа</span></div>
-      </div>
+    <div id="portfolio-list-active" class="portfolio-list" style="display:none">
+      <!-- ... -->
     </div>
-    <div id="portfolio-list-completed" class="portfolio-list" style="display:none;">
-      <div class="offer-card" onclick="openDetail('truba159')">
-        <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
-        <div class="offer-info">Продано 10.05.2025</div>
-        <div class="offer-growth">Результат: <span class="growth-positive">+12.5%</span></div>
-      </div>
+    <div id="portfolio-list-completed" class="portfolio-list" style="display:none">
+      <!-- ... -->
     </div>
   </div>
-  <!-- Investment Details Section (Hidden, used for modal) -->
-  <div id="detail-section" class="section" style="display:none;">
-    <div class="header">
-      <button class="back-button" onclick="backFromDetail()">‹</button>
-      <div class="title">Детали инвестиции</div>
-      <button class="notif-button" onclick="showSection('notifications-section')">🔔</button>
-    </div>
-    <div id="detail-content">
-      <div class="offer-name" id="detail-name">Труба 325<span class="steel-mark" id="detail-steel">ст.45</span></div>
-      <div class="offer-info" id="detail-status">В процессе продажи</div>
-      <div class="details-list">
-        <div id="detail-volume">Объем: 8 т</div>
-        <div id="detail-buyprice">Цена закупа: 55 700 ₽/т</div>
-        <div id="detail-sellprice">Ожидаемая цена продажи: 62 000 ₽/т</div>
-        <div id="detail-purchase-date">Дата покупки: 01.03.2025</div>
-        <div id="detail-estimated-date">Ожидаемая дата продажи: ~2 недели</div>
-      </div>
-      <div class="description" id="detail-description">
-        Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса в строительстве.
-      </div>
-      <div class="camera-feed live" id="detail-camera">
-        Прямая трансляция со склада
-      </div>
-    </div>
-  </div>
-  <!-- Modal for Investment Details -->
+
+  <!-- Детали (через модальное окно) -->
   <div id="detail-modal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeDetailModal()">✕</button>
       <div class="offer-name" id="modal-detail-name">Труба 325<span class="steel-mark" id="modal-detail-steel">ст.45</span></div>
       <div class="offer-info" id="modal-detail-status">В процессе продажи</div>
       <div class="details-list">
-        <div id="modal-detail-volume">Объем: 8 т</div>
-        <div id="modal-detail-buyprice">Цена закупа: 55 700 ₽/т</div>
-        <div id="modal-detail-sellprice">Ожидаемая цена продажи: 62 000 ₽/т</div>
+        <div id="modal-detail-volume">Объем: 8 т</div>
+        <div id="modal-detail-buyprice">Цена закупа: 55 700 ₽/т</div>
+        <div id="modal-detail-sellprice">Ожидаемая цена продажи: 62 000 ₽/т</div>
         <div id="modal-detail-purchase-date">Дата покупки: 01.03.2025</div>
-        <div id="modal-detail-estimated-date">Ожидаемая дата продажи: ~2 недели</div>
+        <div id="modal-detail-estimated-date">Ожидаемая дата продажи: ~2 недели</div>
       </div>
       <div class="description" id="modal-detail-description">
-        Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса в строительстве.
+        Стальная труба диаметром 325 мм…  
       </div>
       <div class="camera-feed live" id="modal-detail-camera">
         Прямая трансляция со склада
       </div>
     </div>
   </div>
-  <!-- Cameras Section -->
-  <div id="cameras-section" class="section" style="display:none;">
+
+  <!-- Видеонаблюдение -->
+  <div id="cameras-section" class="section" style="display:none">
     <div class="header">
       <div class="title">Видеонаблюдение</div>
       <button class="notif-button" onclick="showSection('notifications-section')">🔔</button>
     </div>
     <div class="description">
-      Видеонаблюдение позволяет Вам в реальном времени следить за хранением ваших инвестиций на складе.
+      Видеонаблюдение позволяет в реальном времени следить…
     </div>
     <div class="tab-switch">
       <button class="tab active" id="cam-tab-my" onclick="switchCameraTab('my')">Мои инвестиции</button>
@@ -982,45 +630,29 @@
     </div>
     <div id="cameras-my" class="camera-list">
       <div class="camera-item">
-        <span class="cam-name">Склад 2, Камера 5</span><span class="cam-desc"> – Труба 325</span>
+        <span class="cam-name">Склад 2, Камера 5</span><span class="cam-desc"> – Труба 325</span>
       </div>
       <div class="camera-item">
-        <span class="cam-name">Склад 3, Камера 1</span><span class="cam-desc"> – Труба 245</span>
+        <span class="cam-name">Склад 3, Камера 1</span><span class="cam-desc"> – Труба 245</span>
       </div>
     </div>
-    <div id="cameras-all" class="camera-list" style="display:none;">
-      <div class="camera-item">
-        <span class="cam-name">Склад 1, Камера 1</span>
-      </div>
-      <div class="camera-item">
-        <span class="cam-name">Склад 1, Камера 2</span>
-      </div>
-      <div class="camera-item">
-        <span class="cam-name">Склад 2, Камера 3</span>
-      </div>
-      <div class="camera-item">
-        <span class="cam-name">Склад 2, Камера 5</span>
-      </div>
-      <div class="camera-item">
-        <span class="cam-name">Склад 3, Камера 1</span>
-      </div>
+    <div id="cameras-all" class="camera-list" style="display:none">
+      <!-- ... -->
     </div>
   </div>
-  <!-- Profile Section -->
-  <div id="profile-section" class="section profile-section" style="display:none;">
+
+  <!-- Профиль -->
+  <div id="profile-section" class="section profile-section" style="display:none">
     <div class="header">
       <div class="title">Профиль</div>
     </div>
-    <div class="profile-info">
-      <div class="offer-name">Пользователь</div>
-      <div style="font-size: 14px; color: var(--subtext-color); margin-bottom: 12px;">user@example.com</div>
-    </div>
-    <div class="balance">Баланс счета: <span>0 ₽</span></div>
+    <div class="offer-name">Пользователь</div>
+    <div style="font-size:14px;color:var(--subtext-color);margin-bottom:12px">user@example.com</div>
+    <div class="balance">Баланс счета: <span>0 ₽</span></div>
     <div class="balance-actions">
-      <button>Пополнить</button>
-      <button>Вывести</button>
+      <button>Пополнить</button><button>Вывести</button>
     </div>
-    <div class="offer-name" style="font-weight: 600; margin-top: 12px; margin-bottom: 8px;">Настройки</div>
+    <div class="offer-name" style="margin:12px 0 8px;font-weight:600">Настройки</div>
     <div class="toggle-group">
       <label for="darkmode-toggle">Темная тема</label>
       <label class="switch">
@@ -1035,18 +667,13 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="menu-item" onclick="openSupport()">
-      Поддержка <span>›</span>
-    </div>
-    <div class="menu-item" onclick="openPersonalData()">
-      Личные данные <span>›</span>
-    </div>
-    <div class="menu-item logout" onclick="logout()">
-      Выход из аккаунта
-    </div>
+    <div class="menu-item" onclick="openSupport()">Поддержка <span>›</span></div>
+    <div class="menu-item" onclick="openPersonalData()">Личные данные <span>›</span></div>
+    <div class="menu-item logout" onclick="logout()">Выход <span>›</span></div>
   </div>
-  <!-- Notifications Section -->
-  <div id="notifications-section" class="section notifications-section" style="display:none;">
+
+  <!-- Уведомления -->
+  <div id="notifications-section" class="section notifications-section" style="display:none">
     <div class="header">
       <button class="back-button" onclick="backFromNotifications()">‹</button>
       <div class="title">Уведомления</div>
@@ -1054,270 +681,232 @@
     <div class="mark-read" onclick="markAllRead()">Отметить все как прочитанные</div>
     <div class="notification-item unread">
       <div class="notification-title">Инвестиция продана</div>
-      <div class="notification-text">Ваша инвестиция Труба 159 была успешно продана.</div>
+      <div class="notification-text">Ваша инвестиция Труба 159 успешно продана.</div>
       <button class="notification-close" onclick="closeNotification(this)">✕</button>
     </div>
     <div class="notification-item unread">
       <div class="notification-title">Цена изменилась</div>
-      <div class="notification-text">Цена продажи для Труба 245 обновлена.</div>
+      <div class="notification-text">Цена продажи для Труба 245 обновлена.</div>
       <button class="notification-close" onclick="closeNotification(this)">✕</button>
     </div>
     <div class="notification-item">
       <div class="notification-title">Новая инвестиция</div>
-      <div class="notification-text">Добавлено новое предложение: Балка 20.</div>
+      <div class="notification-text">Добавлено предложение: Балка 20.</div>
       <button class="notification-close" onclick="closeNotification(this)">✕</button>
     </div>
   </div>
-  <!-- Bottom Navigation Bar -->
+
+  <!-- Нижняя навигация -->
   <div class="nav-bar" id="bottom-nav">
     <div class="nav-item active" id="nav-home" onclick="showSection('home-section')">
-      <div class="nav-icon">🏠</div>
-      <div class="nav-label">Главная</div>
+      <div class="nav-icon">🏠</div><div class="nav-label">Главная</div>
     </div>
     <div class="nav-item" id="nav-portfolio" onclick="showSection('portfolio-section')">
-      <div class="nav-icon">💼</div>
-      <div class="nav-label">Портфель</div>
+      <div class="nav-icon">💼</div><div class="nav-label">Портфель</div>
     </div>
     <div class="nav-item" id="nav-cameras" onclick="showSection('cameras-section')">
-      <div class="nav-icon">📷</div>
-      <div class="nav-label">Камеры</div>
+      <div class="nav-icon">📷</div><div class="nav-label">Камеры</div>
     </div>
     <div class="nav-item" id="nav-profile" onclick="showSection('profile-section')">
-      <div class="nav-icon">👤</div>
-      <div class="nav-label">Профиль</div>
+      <div class="nav-icon">👤</div><div class="nav-label">Профиль</div>
     </div>
   </div>
+
   <script>
-    // Theme Management
+    // -------------------
+    // Прелоадер и тема
+    // -------------------
+    window.addEventListener('load', () => {
+      // Скрываем прелоадер через 0.5 секунды после полной загрузки
+      setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 500);
+      // После скрытия прелоадера запускаем анимацию частиц
+      initParticles();
+      animateParticles();
+    });
+
     function toggleTheme() {
       document.body.classList.toggle('light');
-      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light':'dark');
     }
-
-    // Load saved theme
-    window.addEventListener('load', () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'light') {
+    // Восстанавливаем тему
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('theme') === 'light') {
         document.body.classList.add('light');
         document.getElementById('darkmode-toggle').checked = false;
-      } else {
-        document.getElementById('darkmode-toggle').checked = true;
       }
     });
 
-    // Preloader
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('preloader').classList.add('hidden');
-      }, 1000);
-    });
-
-    // Particles Background
+    // -------------------
+    // Фон частиц
+    // -------------------
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particlesArray = [];
-    const numberOfParticles = 100;
+    canvas.width = innerWidth; canvas.height = innerHeight;
+    const particles = [];
+    const count = 100;
 
     class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
+      constructor(){
+        this.x = Math.random()*canvas.width;
+        this.y = Math.random()*canvas.height;
+        this.size = Math.random()*3+1;
+        this.vx = Math.random()*0.5-0.25;
+        this.vy = Math.random()*0.5-0.25;
       }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      update(){
+        this.x += this.vx; this.y += this.vy;
+        if(this.x<0||this.x>canvas.width) this.vx *= -1;
+        if(this.y<0||this.y>canvas.height) this.vy *= -1;
       }
-
-      draw() {
-        ctx.fillStyle = 'rgba(100, 116, 139, 0.3)';
+      draw(){
+        ctx.fillStyle = 'rgba(100,116,139,0.3)';
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
         ctx.fill();
       }
     }
 
-    function initParticles() {
-      for (let i = 0; i < numberOfParticles; i++) {
-        particlesArray.push(new Particle());
-      }
+    function initParticles(){
+      for(let i=0;i<count;i++) particles.push(new Particle());
     }
-
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update();
-        particlesArray[i].draw();
-      }
+    function animateParticles(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{p.update(); p.draw()});
       requestAnimationFrame(animateParticles);
     }
-
-    initParticles();
-    animateParticles();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    window.addEventListener('resize', ()=>{
+      canvas.width = innerWidth; canvas.height = innerHeight;
     });
 
-    // Original JavaScript
-    var currentSection = 'home-section';
-    var lastSection = 'home-section';
-
-    function showSection(sectionId) {
-      if (sectionId === currentSection) return;
-      document.getElementById(currentSection).style.display = 'none';
-      document.getElementById(sectionId).style.display = 'block';
-      var navIds = ['home', 'portfolio', 'cameras', 'profile'];
-      if (navIds.some(id => sectionId.startsWith(id))) {
-        navIds.forEach(id => {
-          var navItem = document.getElementById('nav-' + id);
-          if (navItem) navItem.classList.remove('active');
-        });
-        var secName = sectionId.split('-')[0];
-        var newNav = document.getElementById('nav-' + secName);
-        if (newNav) newNav.classList.add('active');
+    // -------------------
+    // Навигация по секциям
+    // -------------------
+    let currentSection='home-section', lastSection='home-section';
+    function showSection(id){
+      if(id===currentSection) return;
+      document.getElementById(currentSection).style.display='none';
+      document.getElementById(id).style.display='block';
+      // Обновляем нижнее меню
+      ['home','portfolio','cameras','profile'].forEach(n=>{
+        document.getElementById('nav-'+n).classList.remove('active');
+      });
+      const name=id.split('-')[0];
+      if(document.getElementById('nav-'+name)) {
+        document.getElementById('nav-'+name).classList.add('active');
+      } else {
+        // оставляем текущее выделение
       }
-      if (sectionId === 'catalog-section' || sectionId === 'notifications-section') {
-        lastSection = currentSection;
+      if(id==='catalog-section'||id==='notifications-section') {
+        lastSection=currentSection;
       }
-      currentSection = sectionId;
+      currentSection=id;
     }
 
-    function openDetail(itemId) {
-      var name = '', steel = '', status = '', volume = '', buyPrice = '', sellPrice = '', purchaseDate = '', estSellDate = '', description = '';
-      if (itemId === 'truba245') {
-        name = 'Труба 245'; steel = 'ст.3'; status = 'На хранении';
-        volume = '10 т'; buyPrice = '55 000 ₽/т'; sellPrice = '60 000 ₽/т';
-        purchaseDate = '01.01.2025'; estSellDate = '≈5 недель';
-        description = 'Стальная труба диаметром 245 мм, хранится на складе №3. Продажа планируется после роста цены.';
-      } else if (itemId === 'truba159') {
-        name = 'Труба 159'; steel = 'ст.20';
-        status = 'Продано';
-        volume = '5 т'; buyPrice = '48 000 ₽/т'; sellPrice = '54 000 ₽/т';
-        purchaseDate = '15.12.2024'; estSellDate = 'Продано 10.05.2025';
-        description = 'Стальная труба диаметром 159 мм. Инвестиция завершена, товар был продан с прибылью.';
-      } else if (itemId === 'truba325') {
-        name = 'Труба 325'; steel = 'ст.45'; status = 'В процессе продажи';
-        volume = '8 т'; buyPrice = '55 700 ₽/т'; sellPrice = '62 000 ₽/т';
-        purchaseDate = '01.03.2025'; estSellDate = '≈2 недели';
-        description = 'Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса.';
-      } else if (itemId === 'truba114') {
-        name = 'Труба 114'; steel = 'ст.3'; status = 'На хранении';
-        volume = '12 т'; buyPrice = '40 000 ₽/т'; sellPrice = '46 000 ₽/т';
-        purchaseDate = '20.02.2025'; estSellDate = '≈3 недели';
-        description = 'Стальная труба диаметром 114 мм, хранится на складе №1. Ожидается увеличение стоимости в ближайшие недели.';
-      } else if (itemId === 'armatura12') {
-        name = 'Арматура 12мм'; steel = 'A500'; status = 'На хранении';
-        volume = '20 т'; buyPrice = '30 000 ₽/т'; sellPrice = '33 000 ₽/т';
-        purchaseDate = '10.01.2025'; estSellDate = '≈6 недель';
-        description = 'Стальная арматура диаметром 12 мм, хранится на складе. Используется в строительстве, ожидается повышение спроса.';
-      } else if (itemId === 'balka20') {
-        name = 'Балка 20'; steel = '09Г2С'; status = 'На хранении';
-        volume = '4 т'; buyPrice = '75 000 ₽/т'; sellPrice = '82 500 ₽/т';
-        purchaseDate = '05.01.2025'; estSellDate = '≈8 недель';
-        description = 'Стальная двутавровая балка №20, хранится на складе. Предполагается рост цены с началом строительного сезона.';
+    // -------------------
+    // Модальное окно деталей
+    // -------------------
+    function openDetail(item){
+      let data={};
+      switch(item){
+        case 'truba245':
+          data={name:'Труба 245',steel:'ст.3',status:'На хранении',
+                volume:'10 т',buy:'55 000 ₽/т',sell:'60 000 ₽/т',
+                date:'01.01.2025',eta:'≈5 недель',
+                desc:'Стальная труба 245 мм…'};
+          break;
+        case 'truba159':
+          data={name:'Труба 159',steel:'ст.20',status:'Продано',
+                volume:'5 т',buy:'48 000 ₽/т',sell:'54 000 ₽/т',
+                date:'15.12.2024',eta:'Продано 10.05.2025',
+                desc:'Стальная труба 159 мм…'};
+          break;
+        case 'truba325':
+          data={name:'Труба 325',steel:'ст.45',status:'В процессе продажи',
+                volume:'8 т',buy:'55 700 ₽/т',sell:'62 000 ₽/т',
+                date:'01.03.2025',eta:'≈2 недели',
+                desc:'Стальная труба 325 мм…'};
+          break;
+        case 'truba114':
+          data={name:'Труба 114',steel:'ст.3',status:'На хранении',
+                volume:'12 т',buy:'40 000 ₽/т',sell:'46 000 ₽/т',
+                date:'20.02.2025',eta:'≈3 недели',
+                desc:'Стальная труба 114 мм…'};
+          break;
+        case 'armatura12':
+          data={name:'Арматура 12мм',steel:'A500',status:'На хранении',
+                volume:'20 т',buy:'30 000 ₽/т',sell:'33 000 ₽/т',
+                date:'10.01.2025',eta:'≈6 недель',
+                desc:'Стальная арматура…'};
+          break;
+        case 'balka20':
+          data={name:'Балка 20',steel:'09Г2С',status:'На хранении',
+                volume:'4 т',buy:'75 000 ₽/т',sell:'82 500 ₽/т',
+                date:'05.01.2025',eta:'≈8 недель',
+                desc:'Стальная балка…'};
+          break;
+        default:
+          return;
       }
-      // Populate modal fields
-      document.getElementById('modal-detail-name').firstChild.textContent = name + ' ';
-      document.getElementById('modal-detail-steel').textContent = steel;
-      document.getElementById('modal-detail-status').textContent = status;
-      document.getElementById('modal-detail-volume').textContent = 'Объем: ' + volume;
-      document.getElementById('modal-detail-buyprice').textContent = 'Цена закупа: ' + buyPrice;
-      document.getElementById('modal-detail-sellprice').textContent = 'Ожидаемая цена продажи: ' + sellPrice;
-      document.getElementById('modal-detail-purchase-date').textContent = 'Дата покупки: ' + purchaseDate;
-      document.getElementById('modal-detail-estimated-date').textContent = (status === 'Продано') ? ('Дата продажи: ' + estSellDate) : ('Ожидаемая дата продажи: ' + estSellDate);
-      document.getElementById('modal-detail-description').textContent = description;
-      // Show modal
+      // Заполняем модал
+      document.getElementById('modal-detail-name').firstChild.textContent = data.name + ' ';
+      document.getElementById('modal-detail-steel').textContent = data.steel;
+      document.getElementById('modal-detail-status').textContent = data.status;
+      document.getElementById('modal-detail-volume').textContent = 'Объем: '+data.volume;
+      document.getElementById('modal-detail-buyprice').textContent = 'Цена закупа: '+data.buy;
+      document.getElementById('modal-detail-sellprice').textContent = 'Ожидаемая цена продажи: '+data.sell;
+      document.getElementById('modal-detail-purchase-date').textContent = 'Дата покупки: '+data.date;
+      document.getElementById('modal-detail-estimated-date').textContent =
+        (data.status==='Продано'?'Дата продажи: '+data.eta:'Ожидаемая дата продажи: '+data.eta);
+      document.getElementById('modal-detail-description').textContent = data.desc;
+      document.getElementById('modal-detail-camera').textContent = 'Прямая трансляция со склада';
       document.getElementById('detail-modal').style.display = 'flex';
     }
-
-    function closeDetailModal() {
+    function closeDetailModal(){
       document.getElementById('detail-modal').style.display = 'none';
     }
 
-    function backFromDetail() {
-      document.getElementById('detail-section').style.display = 'none';
-      document.getElementById(lastSection).style.display = 'block';
-      currentSection = lastSection;
+    // -------------------
+    // Вкладки камер и портфеля
+    // -------------------
+    function switchCameraTab(tab){
+      const my = document.getElementById('cameras-my');
+      const all = document.getElementById('cameras-all');
+      document.getElementById('cam-tab-my').classList.toggle('active', tab==='my');
+      document.getElementById('cam-tab-all').classList.toggle('active', tab==='all');
+      my.style.display = tab==='my'?'block':'none';
+      all.style.display= tab==='all'?'block':'none';
     }
-
-    function switchCameraTab(tab) {
-      var myBtn = document.getElementById('cam-tab-my');
-      var allBtn = document.getElementById('cam-tab-all');
-      var myList = document.getElementById('cameras-my');
-      var allList = document.getElementById('cameras-all');
-      if (tab === 'my') {
-        myBtn.classList.add('active'); allBtn.classList.remove('active');
-        myList.style.display = 'block'; allList.style.display = 'none';
-      } else {
-        myBtn.classList.remove('active'); allBtn.classList.add('active');
-        myList.style.display = 'none'; allList.style.display = 'block';
-      }
-    }
-
-    function switchPortfolioTab(tab) {
-      var allTab = document.getElementById('portfolio-tab-all');
-      var actTab = document.getElementById('portfolio-tab-active');
-      var compTab = document.getElementById('portfolio-tab-completed');
-      var listAll = document.getElementById('portfolio-list-all');
-      var listActive = document.getElementById('portfolio-list-active');
-      var listCompleted = document.getElementById('portfolio-list-completed');
-      if (tab === 'all') {
-        allTab.classList.add('active'); actTab.classList.remove('active'); compTab.classList.remove('active');
-        listAll.style.display = 'block'; listActive.style.display = 'none'; listCompleted.style.display = 'none';
-      } else if (tab === 'active') {
-        allTab.classList.remove('active'); actTab.classList.add('active'); compTab.classList.remove('active');
-        listAll.style.display = 'none'; listActive.style.display = 'block'; listCompleted.style.display = 'none';
-      } else if (tab === 'completed') {
-        allTab.classList.remove('active'); actTab.classList.remove('active'); compTab.classList.add('active');
-        listAll.style.display = 'none'; listActive.style.display = 'none'; listCompleted.style.display = 'block';
-      }
-    }
-
-    function backFromNotifications() {
-      document.getElementById('notifications-section').style.display = 'none';
-      document.getElementById(lastSection).style.display = 'block';
-      currentSection = lastSection;
-    }
-
-    function markAllRead() {
-      var notifs = document.querySelectorAll('.notification-item.unread');
-      notifs.forEach(function(item) {
-        item.classList.remove('unread');
+    function switchPortfolioTab(tab){
+      ['all','active','completed'].forEach(t=>{
+        document.getElementById('portfolio-tab-'+t).classList.toggle('active', t===tab);
+        document.getElementById('portfolio-list-'+t).style.display = t===tab?'block':'none';
       });
     }
 
-    function closeNotification(button) {
-      button.parentElement.style.animation = 'slideOut 0.5s ease forwards';
-      setTimeout(() => {
-        button.parentElement.remove();
-      }, 500);
+    // -------------------
+    // Уведомления
+    // -------------------
+    function backFromNotifications(){
+      document.getElementById('notifications-section').style.display='none';
+      document.getElementById(lastSection).style.display='block';
+      currentSection=lastSection;
+    }
+    function markAllRead(){
+      document.querySelectorAll('.notification-item.unread')
+        .forEach(n=>n.classList.remove('unread'));
+    }
+    function closeNotification(btn){
+      const it=btn.parentElement;
+      it.style.animation='slideOut 0.5s ease forwards';
+      setTimeout(()=>it.remove(),500);
     }
 
-    @keyframes slideOut {
-      to { transform: translateX(100px); opacity: 0; }
-    }
-
-    function openSupport() {
-      alert('Поддержка: функция в разработке');
-    }
-
-    function openPersonalData() {
-      alert('Личные данные: функция в разработке');
-    }
-
-    function logout() {
-      alert('Выход из аккаунта');
-    }
+    // -------------------
+    // Заглушки
+    // -------------------
+    function openSupport(){ alert('Поддержка в разработке'); }
+    function openPersonalData(){ alert('Личные данные в разработке'); }
+    function logout(){ alert('Вы вышли'); }
   </script>
 </body>
 </html>
