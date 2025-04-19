@@ -20,10 +20,11 @@
       display: flex;
       align-items: center;
       padding: 12px 16px;
-      background-color: #1e1e1e;
+      background-color: #1a1a1a;
       color: #e0e0e0;
       font-size: 18px;
       font-weight: bold;
+      border-bottom: 1px solid #333;
     }
     .header .back-button {
       background: none;
@@ -73,7 +74,7 @@
       justify-content: space-between;
       align-items: center;
       font-size: 16px;
-      margin: 16px 0 8px;
+      margin: 16px 0 12px;
       font-weight: bold;
     }
     .section-title .view-all {
@@ -81,15 +82,20 @@
       color: #5ac8fa;
       cursor: pointer;
     }
+    .section-title .view-all:hover {
+      color: #7dd3fc;
+    }
     .offer-card {
       background: #1e1e1e;
       padding: 12px;
       border-radius: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
     }
     .offer-card:hover {
       background: #2a2a2a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .offer-name {
       font-size: 15px;
@@ -105,7 +111,7 @@
       font-size: 14px;
     }
     .offer-info {
-      font-size: 13px;
+      font-size: 14px;
       color: #aaa;
       margin: 4px 0;
     }
@@ -116,7 +122,7 @@
     .growth-negative { color: #f44336; }
     .camera-feed {
       background: #1e1e1e;
-      height: 180px;
+      height: 240px;
       border: 1px solid #333;
       border-radius: 8px;
       display: flex;
@@ -160,6 +166,7 @@
     .tab-switch .tab.active {
       color: #e0e0e0;
       border-bottom: 2px solid #5ac8fa;
+      font-weight: bold;
     }
     .camera-list {
       font-size: 14px;
@@ -248,9 +255,13 @@
       font-size: 14px;
       margin-right: 8px;
       cursor: pointer;
+      transition: background 0.2s;
+    }
+    .profile-section .balance-actions button:hover {
+      background: #7dd3fc;
     }
     .profile-section .menu-item {
-      padding: 12px 0;
+      padding: 16px 0;
       border-bottom: 1px solid #333;
       font-size: 14px;
       cursor: pointer;
@@ -278,11 +289,12 @@
     }
     .notification-item {
       background: #1e1e1e;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
       margin-bottom: 8px;
     }
     .notification-item.unread {
+      background: #252525;
       border-left: 4px solid #5ac8fa;
     }
     .notification-title {
@@ -310,18 +322,21 @@
       color: #aaa;
       font-size: 12px;
       cursor: pointer;
+      transition: color 0.2s, background 0.2s;
     }
     .nav-item .nav-icon {
-      font-size: 20px;
+      font-size: 24px;
       line-height: 1;
     }
     .nav-item .nav-label {
       display: block;
-      font-size: 12px;
+      font-size: 13px;
       margin-top: 2px;
     }
     .nav-item.active {
       color: #e0e0e0;
+      background: #2a2a2a;
+      border-radius: 4px;
     }
     .nav-item.active .nav-icon, .nav-item.active .nav-label {
       color: #e0e0e0;
