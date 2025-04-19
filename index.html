@@ -4,343 +4,355 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ИнвестСклад - Инвестиции в металл</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #3b82f6;
+      --secondary-color: #10b981;
+      --background-color: #1a1a2e;
+      --surface-color: #232338;
+      --text-color: #e5e7eb;
+      --subtext-color: #9ca3af;
+      --accent-color: #60a5fa;
+      --error-color: #ef4444;
+      --font-family: 'Poppins', sans-serif;
+      --gradient-bg: linear-gradient(135deg, #3b82f6, #60a5fa);
+    }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
+      font-family: var(--font-family);
+      background-color: var(--background-color);
+      color: var(--text-color);
+      transition: all 0.4s ease;
     }
-    /* Global default styles */
-    .section { padding: 16px; }
+    body.light {
+      --background-color: #f3f4f6;
+      --surface-color: #ffffff;
+      --text-color: #1f2937;
+      --subtext-color: #6b7280;
+      --accent-color: #3b82f6;
+      --gradient-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
+    }
+    .section { padding: 24px; }
     h1, h2, h3, h4, h5, h6 { margin: 0; }
-    a { color: #5ac8fa; text-decoration: none; cursor: pointer; }
-    /* Dark theme specific colors */
+    a { color: var(--primary-color); text-decoration: none; cursor: pointer; }
     .header {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
-      background-color: #1a1a1a;
-      color: #e0e0e0;
-      font-size: 18px;
-      font-weight: bold;
-      border-bottom: 1px solid #333;
+      padding: 16px 24px;
+      background: var(--gradient-bg);
+      color: #fff;
+      font-size: 20px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 0 0 12px 12px;
     }
     .header .back-button {
       background: none;
       border: none;
-      color: #5ac8fa;
-      font-size: 24px;
-      line-height: 24px;
-      margin-right: 8px;
+      color: #fff;
+      font-size: 28px;
+      margin-right: 16px;
       cursor: pointer;
+      transition: transform 0.2s;
     }
+    .header .back-button:hover { transform: scale(1.1); }
     .header .title { flex: 1; }
     .header .notif-button {
       background: none;
       border: none;
-      color: #e0e0e0;
-      font-size: 20px;
+      color: #fff;
+      font-size: 24px;
       cursor: pointer;
+      transition: transform 0.2s;
     }
+    .header .notif-button:hover { transform: scale(1.1); }
     .greeting-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 18px;
-      margin-bottom: 4px;
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 12px;
     }
     .greeting-bar .notify-icon {
-      font-size: 22px;
+      font-size: 26px;
       cursor: pointer;
+      transition: color 0.3s;
     }
+    .greeting-bar .notify-icon:hover { color: var(--accent-color); }
     .sub-greeting {
-      font-size: 14px;
-      color: #aaa;
-      margin-bottom: 16px;
+      font-size: 16px;
+      color: var(--subtext-color);
+      margin-bottom: 24px;
     }
     .portfolio-summary {
-      background: #1e1e1e;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      font-size: 14px;
+      background: var(--surface-color);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      font-size: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
     }
-    .portfolio-summary div {
-      margin: 4px 0;
-    }
+    .portfolio-summary:hover { transform: translateY(-4px); }
+    .portfolio-summary div { margin: 10px 0; }
     .section-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 16px;
-      margin: 16px 0 12px;
-      font-weight: bold;
+      font-size: 20px;
+      font-weight: 500;
+      margin: 24px 0 16px;
     }
     .section-title .view-all {
-      font-size: 14px;
-      color: #5ac8fa;
+      font-size: 16px;
+      color: var(--primary-color);
       cursor: pointer;
+      transition: color 0.3s;
     }
-    .section-title .view-all:hover {
-      color: #7dd3fc;
-    }
+    .section-title .view-all:hover { color: var(--accent-color); }
     .offer-card {
-      background: #1e1e1e;
-      padding: 12px;
-      border-radius: 8px;
+      background: var(--surface-color);
+      padding: 20px;
+      border-radius: 16px;
       margin-bottom: 16px;
       cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
     }
     .offer-card:hover {
-      background: #2a2a2a;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      background: #2d2d44;
     }
+    body.light .offer-card:hover { background: #f9fafb; }
     .offer-name {
-      font-size: 15px;
-      font-weight: bold;
-      margin-bottom: 4px;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
     }
     .offer-name .steel-mark {
       font-weight: normal;
-      color: #aaa;
-      margin-left: 4px;
+      color: var(--subtext-color);
+      margin-left: 8px;
     }
-    .offer-prices {
-      font-size: 14px;
-    }
+    .offer-prices { font-size: 15px; margin: 6px 0; }
     .offer-info {
       font-size: 14px;
-      color: #aaa;
-      margin: 4px 0;
+      color: var(--subtext-color);
+      margin: 8px 0;
     }
-    .offer-growth {
-      font-size: 14px;
-    }
-    .growth-positive { color: #4caf50; }
-    .growth-negative { color: #f44336; }
+    .offer-growth { font-size: 15px; }
+    .growth-positive { color: var(--secondary-color); }
+    .growth-negative { color: var(--error-color); }
     .camera-feed {
-      background: #1e1e1e;
-      height: 240px;
-      border: 1px solid #333;
-      border-radius: 8px;
+      background: var(--surface-color);
+      height: 260px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #aaa;
-      font-size: 14px;
-      margin: 8px 0 16px;
+      color: var(--subtext-color);
+      font-size: 16px;
+      margin: 16px 0 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     .camera-feed.live:before {
       content: '🔴 ';
-      margin-right: 4px;
+      margin-right: 8px;
     }
     .details-list {
-      font-size: 14px;
-      margin-bottom: 8px;
+      font-size: 15px;
+      margin-bottom: 16px;
     }
-    .details-list div {
-      margin: 4px 0;
-    }
+    .details-list div { margin: 8px 0; }
     .description {
-      font-size: 14px;
-      line-height: 1.4;
-      color: #ccc;
-      margin: 8px 0 16px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-color);
+      margin: 16px 0 24px;
     }
     .tab-switch {
       display: flex;
-      margin-bottom: 8px;
-      border-bottom: 1px solid #333;
+      margin-bottom: 16px;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
     }
     .tab-switch .tab {
       flex: 1;
       background: none;
       border: none;
-      padding: 8px 0;
-      font-size: 14px;
-      color: #aaa;
+      padding: 12px 0;
+      font-size: 16px;
+      color: var(--subtext-color);
       cursor: pointer;
+      transition: all 0.3s;
     }
     .tab-switch .tab.active {
-      color: #e0e0e0;
-      border-bottom: 2px solid #5ac8fa;
-      font-weight: bold;
+      color: var(--text-color);
+      border-bottom: 3px solid var(--primary-color);
+      font-weight: 500;
     }
-    .camera-list {
-      font-size: 14px;
-    }
+    .tab-switch .tab:hover { color: var(--accent-color); }
+    .camera-list { font-size: 15px; }
     .camera-item {
-      background: #1e1e1e;
-      padding: 8px;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      background: var(--surface-color);
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s;
     }
-    .camera-item .cam-name {
-      color: #e0e0e0;
-      font-weight: bold;
+    .camera-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
     }
-    .camera-item .cam-desc {
-      color: #aaa;
-      margin-left: 4px;
-    }
+    .camera-item .cam-name { font-weight: 500; }
+    .camera-item .cam-desc { color: var(--subtext-color); margin-left: 8px; }
     .toggle-group {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #333;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .toggle-group:last-child {
-      border-bottom: none;
-    }
-    .toggle-group label {
-      font-size: 14px;
-    }
+    .toggle-group:last-child { border-bottom: none; }
+    .toggle-group label { font-size: 16px; }
     .switch {
       position: relative;
       display: inline-block;
-      width: 40px;
-      height: 20px;
+      width: 56px;
+      height: 28px;
     }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
       position: absolute;
       top: 0; left: 0;
       right: 0; bottom: 0;
-      background-color: #757575;
-      border-radius: 34px;
+      background-color: #6b7280;
+      border-radius: 28px;
       cursor: pointer;
-      transition: .2s;
+      transition: all 0.3s ease;
     }
     .slider:before {
       position: absolute;
       content: "";
-      height: 14px;
-      width: 14px;
+      height: 22px;
+      width: 22px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
+      background-color: #fff;
       border-radius: 50%;
-      transition: .2s;
+      transition: all 0.3s ease;
     }
     input:checked + .slider {
-      background-color: #5ac8fa;
+      background: var(--gradient-bg);
     }
     input:checked + .slider:before {
-      transform: translateX(20px);
+      transform: translateX(28px);
     }
     .profile-section .balance {
-      font-size: 16px;
-      margin: 8px 0;
+      font-size: 18px;
+      margin: 16px 0;
     }
     .profile-section .balance span {
-      font-weight: bold;
-      font-size: 18px;
+      font-weight: 500;
+      font-size: 22px;
     }
-    .profile-section .balance-actions {
-      margin-bottom: 16px;
-    }
+    .profile-section .balance-actions { margin-bottom: 24px; }
     .profile-section .balance-actions button {
-      background: #5ac8fa;
+      background: var(--gradient-bg);
       border: none;
-      color: #000;
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 14px;
-      margin-right: 8px;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-right: 12px;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
     }
     .profile-section .balance-actions button:hover {
-      background: #7dd3fc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
     }
     .profile-section .menu-item {
       padding: 16px 0;
-      border-bottom: 1px solid #333;
-      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: color 0.3s;
     }
-    .profile-section .menu-item:last-child {
-      border-bottom: none;
-    }
-    .profile-section .menu-item.logout {
-      color: #f44336;
-    }
+    .profile-section .menu-item:hover { color: var(--accent-color); }
+    .profile-section .menu-item:last-child { border-bottom: none; }
+    .profile-section .menu-item.logout { color: var(--error-color); }
     .profile-section .menu-item span {
-      color: #aaa;
-      font-size: 16px;
+      color: var(--subtext-color);
+      font-size: 20px;
     }
-    /* Notifications */
     .notifications-section .mark-read {
       text-align: right;
-      font-size: 13px;
-      margin-bottom: 8px;
-      color: #5ac8fa;
+      font-size: 14px;
+      margin-bottom: 16px;
+      color: var(--primary-color);
       cursor: pointer;
+      transition: color 0.3s;
     }
+    .notifications-section .mark-read:hover { color: var(--accent-color); }
     .notification-item {
-      background: #1e1e1e;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      background: var(--surface-color);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s;
     }
     .notification-item.unread {
-      background: #252525;
-      border-left: 4px solid #5ac8fa;
+      border-left: 4px solid var(--primary-color);
+    }
+    .notification-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
     }
     .notification-title {
-      font-size: 14px;
-      font-weight: bold;
+      font-size: 16px;
+      font-weight: 500;
     }
     .notification-text {
-      font-size: 13px;
-      color: #aaa;
+      font-size: 14px;
+      color: var(--subtext-color);
     }
-    /* Bottom Navigation */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0;
       width: 100%;
-      background: #1e1e1e;
+      background: var(--surface-color);
       display: flex;
       justify-content: space-around;
-      border-top: 1px solid #333;
-      padding: 4px 0;
+      padding: 10px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+      border-radius: 12px 12px 0 0;
     }
     .nav-item {
       flex: 1;
       text-align: center;
-      color: #aaa;
-      font-size: 12px;
+      color: var(--subtext-color);
+      font-size: 14px;
       cursor: pointer;
-      transition: color 0.2s, background 0.2s;
+      padding: 8px;
+      transition: all 0.3s ease;
     }
-    .nav-item .nav-icon {
-      font-size: 24px;
-      line-height: 1;
-    }
-    .nav-item .nav-label {
-      display: block;
-      font-size: 13px;
-      margin-top: 2px;
-    }
+    .nav-item .nav-icon { font-size: 28px; }
+    .nav-item .nav-label { margin-top: 4px; }
     .nav-item.active {
-      color: #e0e0e0;
-      background: #2a2a2a;
-      border-radius: 4px;
+      color: var(--primary-color);
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 8px;
     }
-    .nav-item.active .nav-icon, .nav-item.active .nav-label {
-      color: #e0e0e0;
-    }
+    .nav-item:hover { color: var(--accent-color); }
   </style>
 </head>
 <body>
@@ -352,8 +364,8 @@
     </div>
     <div class="sub-greeting">Добро пожаловать в ИнвестСклад</div>
     <div class="portfolio-summary">
-      <div>Инвестировано: 200 000 ₽</div>
-      <div>Текущая стоимость: 220 000 ₽</div>
+      <div>Инвестировано: 200 000 ₽</div>
+      <div>Текущая стоимость: 220 000 ₽</div>
       <div>Доходность: +10%</div>
     </div>
     <div class="section-title">
@@ -363,29 +375,29 @@
     <!-- Recommended offers list -->
     <div class="offer-card" onclick="openDetail('truba245')">
       <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 10 т • Срок: ≈2-8 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
       <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
-      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 5 т • Срок: ≈3-10 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
       <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 8 т • Срок: ≈4-12 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
       <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 12 т • Срок: ≈1-6 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
     </div>
@@ -400,44 +412,44 @@
     <!-- Offers catalog list -->
     <div class="offer-card" onclick="openDetail('truba245')">
       <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>55 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>60 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 10 т • Срок: ≈2-8 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
       <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
-      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>48 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>54 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 5 т • Срок: ≈3-10 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
       <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
-      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>55 700 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>62 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 8 т • Срок: ≈4-12 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
       <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
-      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>40 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>46 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 12 т • Срок: ≈1-6 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
     </div>
     <!-- Additional offers in catalog not shown on main recommended -->
     <div class="offer-card" onclick="openDetail('armatura12')">
       <div class="offer-name">Арматура 12мм<span class="steel-mark">A500</span></div>
-      <div class="offer-prices">Цена закупа: <b>30 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>33 000 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>30 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>33 000 ₽/т</b></div>
       <div class="offer-info">Доступно: 20 т • Срок: ≈4-10 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
     </div>
     <div class="offer-card" onclick="openDetail('balka20')">
       <div class="offer-name">Балка 20<span class="steel-mark">09Г2С</span></div>
-      <div class="offer-prices">Цена закупа: <b>75 000 ₽/т</b></div>
-      <div class="offer-prices">Цена продажи: <b>82 500 ₽/т</b></div>
+      <div class="offer-prices">Цена закупа: <b>75 000 ₽/т</b></div>
+      <div class="offer-prices">Цена продажи: <b>82 500 ₽/т</b></div>
       <div class="offer-info">Доступно: 4 т • Срок: ≈6-14 недель</div>
       <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
     </div>
@@ -504,8 +516,8 @@
       <div class="offer-info" id="detail-status">В процессе продажи</div>
       <div class="details-list">
         <div id="detail-volume">Объем: 8 т</div>
-        <div id="detail-buyprice">Цена закупа: 55 700 ₽/т</div>
-        <div id="detail-sellprice">Ожидаемая цена продажи: 62 000 ₽/т</div>
+        <div id="detail-buyprice">Цена закупа: 55 700 ₽/т</div>
+        <div id="detail-sellprice">Ожидаемая цена продажи: 62 000 ₽/т</div>
         <div id="detail-purchase-date">Дата покупки: 01.03.2025</div>
         <div id="detail-estimated-date">Ожидаемая дата продажи: ~2 недели</div>
       </div>
@@ -563,18 +575,18 @@
     </div>
     <div class="profile-info">
       <div class="offer-name">Пользователь</div>
-      <div style="font-size: 13px; color: #aaa; margin-bottom: 8px;">user@example.com</div>
+      <div style="font-size: 14px; color: var(--subtext-color); margin-bottom: 12px;">user@example.com</div>
     </div>
     <div class="balance">Баланс счета: <span>0 ₽</span></div>
     <div class="balance-actions">
       <button>Пополнить</button>
       <button>Вывести</button>
     </div>
-    <div class="offer-name" style="font-weight: bold; margin-top: 8px; margin-bottom: 4px;">Настройки</div>
+    <div class="offer-name" style="font-weight: 500; margin-top: 12px; margin-bottom: 8px;">Настройки</div>
     <div class="toggle-group">
       <label for="darkmode-toggle">Темная тема</label>
       <label class="switch">
-        <input id="darkmode-toggle" type="checkbox" checked>
+        <input id="darkmode-toggle" type="checkbox" checked onclick="toggleTheme()">
         <span class="slider"></span>
       </label>
     </div>
@@ -637,7 +649,11 @@
   <script>
     var currentSection = 'home-section';
     var lastSection = 'home-section'; // for tracking back navigation
-    
+
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+    }
+
     function showSection(sectionId) {
       // If trying to show current section again, do nothing
       if(sectionId === currentSection) return;
@@ -667,40 +683,40 @@
       // Update current
       currentSection = sectionId;
     }
-    
+
     function openDetail(itemId) {
       // find item in our data (since we have small set, use if/else)
       var name='', steel='', status='', volume='', buyPrice='', sellPrice='', purchaseDate='', estSellDate='', description='';
       if(itemId === 'truba245') {
         name = 'Труба 245'; steel = 'ст.3'; status = 'На хранении';
-        volume = '10 т'; buyPrice = '55 000 ₽/т'; sellPrice = '60 000 ₽/т';
+        volume = '10 т'; buyPrice = '55 000 ₽/т'; sellPrice = '60 000 ₽/т';
         purchaseDate = '01.01.2025'; estSellDate = '≈5 недель';
         description = 'Стальная труба диаметром 245 мм, хранится на складе №3. Продажа планируется после роста цены.';
       } else if(itemId === 'truba159') {
-        name = 'Труба 159'; steel = 'ст.20'; 
+        name = 'Труба 159'; steel = 'ст.20';
         // Если инвестиция уже завершена
-        status = 'Продано'; 
-        volume = '5 т'; buyPrice = '48 000 ₽/т'; sellPrice = '54 000 ₽/т';
+        status = 'Продано';
+        volume = '5 т'; buyPrice = '48 000 ₽/т'; sellPrice = '54 000 ₽/т';
         purchaseDate = '15.12.2024'; estSellDate = 'Продано 10.05.2025';
         description = 'Стальная труба диаметром 159 мм. Инвестиция завершена, товар был продан с прибылью.';
       } else if(itemId === 'truba325') {
         name = 'Труба 325'; steel = 'ст.45'; status = 'В процессе продажи';
-        volume = '8 т'; buyPrice = '55 700 ₽/т'; sellPrice = '62 000 ₽/т';
+        volume = '8 т'; buyPrice = '55 700 ₽/т'; sellPrice = '62 000 ₽/т';
         purchaseDate = '01.03.2025'; estSellDate = '≈2 недели';
         description = 'Стальная труба диаметром 325 мм, хранится на складе №2. Ожидается рост цены из-за повышенного спроса.';
       } else if(itemId === 'truba114') {
         name = 'Труба 114'; steel = 'ст.3'; status = 'На хранении';
-        volume = '12 т'; buyPrice = '40 000 ₽/т'; sellPrice = '46 000 ₽/т';
+        volume = '12 т'; buyPrice = '40 000 ₽/т'; sellPrice = '46 000 ₽/т';
         purchaseDate = '20.02.2025'; estSellDate = '≈3 недели';
         description = 'Стальная труба диаметром 114 мм, хранится на складе №1. Ожидается увеличение стоимости в ближайшие недели.';
       } else if(itemId === 'armatura12') {
         name = 'Арматура 12мм'; steel = 'A500'; status = 'На хранении';
-        volume = '20 т'; buyPrice = '30 000 ₽/т'; sellPrice = '33 000 ₽/т';
+        volume = '20 т'; buyPrice = '30 000 ₽/т'; sellPrice = '33 000 ₽/т';
         purchaseDate = '10.01.2025'; estSellDate = '≈6 недель';
         description = 'Стальная арматура диаметром 12 мм, хранится на складе. Используется в строительстве, ожидается повышение спроса.';
       } else if(itemId === 'balka20') {
         name = 'Балка 20'; steel = '09Г2С'; status = 'На хранении';
-        volume = '4 т'; buyPrice = '75 000 ₽/т'; sellPrice = '82 500 ₽/т';
+        volume = '4 т'; buyPrice = '75 000 ₽/т'; sellPrice = '82 500 ₽/т';
         purchaseDate = '05.01.2025'; estSellDate = '≈8 недель';
         description = 'Стальная двутавровая балка №20, хранится на складе. Предполагается рост цены с началом строительного сезона.';
       }
@@ -717,7 +733,7 @@
       // Show detail section
       showSection('detail-section');
     }
-    
+
     function backFromDetail() {
       // Hide detail section
       document.getElementById('detail-section').style.display = 'none';
@@ -725,7 +741,7 @@
       document.getElementById(lastSection).style.display = 'block';
       currentSection = lastSection;
     }
-    
+
     function switchCameraTab(tab) {
       // tab: 'my' or 'all'
       var myBtn = document.getElementById('cam-tab-my');
@@ -740,7 +756,7 @@
         myList.style.display = 'none'; allList.style.display = 'block';
       }
     }
-    
+
     function switchPortfolioTab(tab) {
       var allTab = document.getElementById('portfolio-tab-all');
       var actTab = document.getElementById('portfolio-tab-active');
@@ -759,20 +775,20 @@
         listAll.style.display = 'none'; listActive.style.display = 'none'; listCompleted.style.display = 'block';
       }
     }
-    
+
     function backFromNotifications() {
       document.getElementById('notifications-section').style.display = 'none';
       document.getElementById(lastSection).style.display = 'block';
       currentSection = lastSection;
     }
-    
+
     function markAllRead() {
       var notifs = document.querySelectorAll('.notification-item.unread');
       notifs.forEach(function(item) {
         item.classList.remove('unread');
       });
     }
-    
+
     // Dummy functions for unsupported actions
     function openSupport() {
       alert('Поддержка: функция в разработке');
