@@ -30,6 +30,7 @@
       color: var(--text-color);
       transition: all 0.8s ease;
       overflow-x: hidden;
+      position: relative;
     }
     body.light {
       --background-color: #f1f5f9;
@@ -194,6 +195,27 @@
       margin-top: 8px;
       opacity: 0;
       animation: fadeIn 1s ease forwards 0.5s;
+    }
+    .offer-card .tooltip {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      color: var(--text-color);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+    .offer-card:hover .tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
     }
     .offer-name {
       font-size: 20px;
@@ -429,6 +451,12 @@
       font-size: 14px;
       color: var(--subtext-color);
     }
+    .notification-timestamp {
+      font-size: 12px;
+      color: var(--subtext-color);
+      margin-top: 8px;
+      opacity: 0.8;
+    }
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0;
@@ -494,8 +522,25 @@
       border-radius: 10px;
       border: none;
       font-size: 14px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255,  aubergine0.1);
       color: var(--text-color);
+    }
+    .admin-form input.invalid {
+      border: 2px solid var(--error-color);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .admin-form input.valid {
+      border: 2px solid var(--secondary-color);
+      background: rgba(34, 197, 94, 0.1);
+    }
+    .admin-form .error-message {
+      color: var(--error-color);
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+    .admin-form input.invalid + .error-message {
+      display: block;
     }
     .admin-form button {
       background: var(--gradient-bg);
@@ -505,6 +550,56 @@
     .admin-form button:hover {
       transform: translateY(-4px);
       box-shadow: var(--glow);
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .search-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-color);
+      font-size: 16px;
+      outline: none;
+    }
+    .search-bar svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--subtext-color);
+      margin-right: 12px;
+    }
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--background-color);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .loader.active {
+      display: flex;
+      opacity: 1;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--primary-color);
+      border-top: 4px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
     @media (max-width: 768px) {
       .section { padding: 24px 12px; }
@@ -547,6 +642,9 @@
       .nav-item .nav-label { margin-top: 4px; }
       .admin-form { padding: 20px; }
       .admin-form input, .admin-form button { font-size: 12px; }
+      .search-bar { padding: 8px 12px; }
+      .search-bar input { font-size: 14px; }
+      .search-bar svg { width: 20px; height: 20px; }
     }
     @keyframes gradientShift {
       0% { background-position: 0% 50%; }
@@ -581,9 +679,17 @@
       50% { transform: scale(1.5); opacity: 0.2; }
       100% { transform: scale(1); opacity: 0.5; }
     }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+  </div>
   <!-- Home Section -->
   <div id="home-section" class="section">
     <div class="greeting-bar">
@@ -611,6 +717,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~5 000 ₽/т</div>
       <div class="motivation-text">Инвестируйте сейчас и получите +9.1%!</div>
+      <div class="tooltip">Прибыль: ~5 000 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
       <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
@@ -620,6 +727,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~6 000 ₽/т</div>
       <div class="motivation-text">Высокий спрос! Успейте инвестировать!</div>
+      <div class="tooltip">Прибыль: ~6 000 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
       <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
@@ -629,6 +737,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~6 300 ₽/т</div>
       <div class="motivation-text">Стабильный рост! Инвестируйте сейчас!</div>
+      <div class="tooltip">Прибыль: ~6 300 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
       <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
@@ -638,6 +747,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~6 000 ₽/т</div>
       <div class="motivation-text">Максимальная доходность! Не упустите!</div>
+      <div class="tooltip">Прибыль: ~6 000 ₽/т</div>
     </div>
   </div>
   <!-- Catalog Section -->
@@ -649,6 +759,12 @@
         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
       </svg>
     </div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1016.65 16.65z"/>
+      </svg>
+      <input type="text" id="catalog-search" placeholder="Поиск по каталогу..." oninput="filterCatalog()">
+    </div>
     <!-- Offers catalog list -->
     <div class="offer-card" onclick="openDetail('truba245')">
       <div class="offer-name">Труба 245<span class="steel-mark">ст.3</span></div>
@@ -658,6 +774,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+9.1%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~5 000 ₽/т</div>
       <div class="motivation-text">Инвестируйте сейчас и получите +9.1%!</div>
+      <div class="tooltip">Прибыль: ~5 000 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('truba159')">
       <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
@@ -667,6 +784,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+12.5%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~6 000 ₽/т</div>
       <div class="motivation-text">Высокий спрос! Успейте инвестировать!</div>
+      <div class="tooltip">Прибыль: ~6 000 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('truba325')">
       <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
@@ -676,6 +794,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+11.3%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~6 300 ₽/т</div>
       <div class="motivation-text">Стабильный рост! Инвестируйте сейчас!</div>
+      <div class="tooltip">Прибыль: ~6 300 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('truba114')">
       <div class="offer-name">Труба 114<span class="steel-mark">ст.3</span></div>
@@ -685,6 +804,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+15%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~6 000 ₽/т</div>
       <div class="motivation-text">Максимальная доходность! Не упустите!</div>
+      <div class="tooltip">Прибыль: ~6 000 ₽/т</div>
     </div>
     <!-- Additional offers in catalog not shown on main recommended -->
     <div class="offer-card" onclick="openDetail('armatura12')">
@@ -695,6 +815,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~3 000 ₽/т</div>
       <div class="motivation-text">Надёжный выбор для инвесторов!</div>
+      <div class="tooltip">Прибыль: ~3 000 ₽/т</div>
     </div>
     <div class="offer-card" onclick="openDetail('balka20')">
       <div class="offer-name">Балка 20<span class="steel-mark">09Г2С</span></div>
@@ -704,6 +825,7 @@
       <div class="offer-growth">Прирост: <span class="growth-positive">+10%</span></div>
       <div class="extra-info">Ожидаемая прибыль: ~7 500 ₽/т</div>
       <div class="motivation-text">Премиум-инвестиция с высоким доходом!</div>
+      <div class="tooltip">Прибыль: ~7 500 ₽/т</div>
     </div>
   </div>
   <!-- Portfolio Section -->
@@ -728,6 +850,7 @@
         <div class="offer-growth">Статус: <span class="growth-positive">Хранение</span></div>
         <div class="extra-info">Ожидаемая продажа: ~5 000 ₽/т</div>
         <div class="motivation-text">Ваш актив в надёжных руках!</div>
+        <div class="tooltip">Статус: Хранение</div>
       </div>
       <div class="offer-card" onclick="openDetail('truba325')">
         <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
@@ -735,6 +858,7 @@
         <div class="offer-growth">Статус: <span class="growth-positive">Продажа</span></div>
         <div class="extra-info">Ожидаемая продажа: ~6 300 ₽/т</div>
         <div class="motivation-text">Скоро зафиксируем прибыль!</div>
+        <div class="tooltip">Статус: Продажа</div>
       </div>
       <div class="offer-card" onclick="openDetail('truba159')">
         <div class="offer-name">Труба 159<span class="steel-mark">ст.20</span></div>
@@ -742,6 +866,7 @@
         <div class="offer-growth">Результат: <span class="growth-positive">+12.5%</span></div>
         <div class="extra-info">Прибыль: ~6 000 ₽/т</div>
         <div class="motivation-text">Отличный результат! Инвестируйте снова!</div>
+        <div class="tooltip">Прибыль: ~6 000 ₽/т</div>
       </div>
     </div>
     <div id="portfolio-list-active" class="portfolio-list" style="display:none;">
@@ -751,6 +876,7 @@
         <div class="offer-growth">Статус: <span class="growth-positive">Хранение</span></div>
         <div class="extra-info">Ожидаемая продажа: ~5 000 ₽/т</div>
         <div class="motivation-text">Ваш актив в надёжных руках!</div>
+        <div class="tooltip">Статус: Хранение</div>
       </div>
       <div class="offer-card" onclick="openDetail('truba325')">
         <div class="offer-name">Труба 325<span class="steel-mark">ст.45</span></div>
@@ -758,6 +884,7 @@
         <div class="offer-growth">Статус: <span class="growth-positive">Продажа</span></div>
         <div class="extra-info">Ожидаемая продажа: ~6 300 ₽/т</div>
         <div class="motivation-text">Скоро зафиксируем прибыль!</div>
+        <div class="tooltip">Статус: Продажа</div>
       </div>
     </div>
     <div id="portfolio-list-completed" class="portfolio-list" style="display:none;">
@@ -767,6 +894,7 @@
         <div class="offer-growth">Результат: <span class="growth-positive">+12.5%</span></div>
         <div class="extra-info">Прибыль: ~6 000 ₽/т</div>
         <div class="motivation-text">Отличный результат! Инвестируйте снова!</div>
+        <div class="tooltip">Прибыль: ~6 000 ₽/т</div>
       </div>
     </div>
   </div>
@@ -890,14 +1018,17 @@
     <div class="notification-item unread">
       <div class="notification-title">Инвестиция продана</div>
       <div class="notification-text">Ваша инвестиция Труба 159 была успешно продана.</div>
+      <div class="notification-timestamp">20.04.2025, 14:30</div>
     </div>
     <div class="notification-item unread">
       <div class="notification-title">Цена изменилась</div>
       <div class="notification-text">Цена продажи для Труба 245 обновлена.</div>
+      <div class="notification-timestamp">20.04.2025, 12:15</div>
     </div>
     <div class="notification-item">
       <div class="notification-title">Новая инвестиция</div>
       <div class="notification-text">Добавлено новое предложение: Балка 20.</div>
+      <div class="notification-timestamp">19.04.2025, 09:00</div>
     </div>
   </div>
   <!-- Admin Section -->
@@ -908,16 +1039,22 @@
     </div>
     <div id="admin-login" class="admin-form">
       <input type="password" id="admin-password" placeholder="Введите пароль" />
+      <div class="error-message">Пожалуйста, введите корректный пароль</div>
       <button onclick="loginAdmin()">Войти</button>
     </div>
     <div id="admin-content" style="display:none;">
       <div class="admin-form">
         <h3>Управление трубами</h3>
         <input type="text" id="pipe-name" placeholder="Название трубы (например, Труба 245 ст.3)" />
-        <input type="number" id="pipe-buy-price" placeholder="Цена закупа (₽/т)" />
-        <input type="number" id="pipe-sell-price" placeholder="Цена продажи (₽/т)" />
-        <input type="number" id="pipe-availability" placeholder="Доступность (тонн)" />
+        <div class="error-message">Введите название трубы</div>
+        <input type="number" id="pipe-buy-price" placeholder="Цена закупа (₽/т)" min="0" />
+        <div class="error-message">Введите корректную цену закупа</div>
+        <input type="number" id="pipe-sell-price" placeholder="Цена продажи (₽/т)" min="0" />
+        <div class="error-message">Введите корректную цену продажи</div>
+        <input type="number" id="pipe-availability" placeholder="Доступность (тонн)" min="0" />
+        <div class="error-message">Введите доступное количество</div>
         <input type="text" id="pipe-term" placeholder="Примерный срок (например, 2-8 недель)" />
+        <div class="error-message">Введите срок</div>
         <div id="pipe-growth-profit"></div>
         <button onclick="addPipe()">Добавить/Изменить трубу</button>
         <button onclick="deletePipe()">Удалить трубу</button>
@@ -925,6 +1062,7 @@
       <div class="admin-form">
         <h3>Управление камерами</h3>
         <input type="text" id="camera-name" placeholder="Название камеры (например, Склад 2, Камера 5)" />
+        <div class="error-message">Введите название камеры</div>
         <input type="text" id="camera-desc" placeholder="Описание (например, Труба 325)" />
         <button onclick="addCamera()">Добавить камеру</button>
         <button onclick="deleteCamera()">Удалить камеру</button>
@@ -992,6 +1130,7 @@
           ? `Добро пожаловать в ИнвестСклад, ${user.first_name}!` 
           : 'Добро пожаловать в ИнвестСклад!';
       }
+      setupAdminFormValidation();
     });
 
     document.addEventListener('click', (e) => {
@@ -1019,22 +1158,36 @@
 
     function showSection(sectionId) {
       if (sectionId === currentSection) return;
-      document.getElementById(currentSection).style.display = 'none';
-      document.getElementById(sectionId).style.display = 'block';
-      const navIds = ['home', 'portfolio', 'cameras', 'profile', 'admin'];
-      if (navIds.some(id => sectionId.startsWith(id))) {
-        navIds.forEach(id => {
-          const navItem = document.getElementById('nav-' + id);
-          if (navItem) navItem.classList.remove('active');
-        });
-        const secName = sectionId.split('-')[0];
-        const newNav = document.getElementById('nav-' + secName);
-        if (newNav) newNav.classList.add('active');
-      }
-      if (sectionId === 'catalog-section' || sectionId === 'detail-section' || sectionId === 'notifications-section' || sectionId === 'admin-section') {
-        lastSection = currentSection;
-      }
-      currentSection = sectionId;
+      const loader = document.getElementById('loader');
+      loader.classList.add('active');
+      setTimeout(() => {
+        document.getElementById(currentSection).style.display = 'none';
+        document.getElementById(sectionId).style.display = 'block';
+        const navIds = ['home', 'portfolio', 'cameras', 'profile', 'admin'];
+        if (navIds.some(id => sectionId.startsWith(id))) {
+          navIds.forEach(id => {
+            const navItem = document.getElementById('nav-' + id);
+            if (navItem) navItem.classList.remove('active');
+          });
+          const secName = sectionId.split('-')[0];
+          const newNav = document.getElementById('nav-' + secName);
+          if (newNav) newNav.classList.add('active');
+        }
+        if (sectionId === 'catalog-section' || sectionId === 'detail-section' || sectionId === 'notifications-section' || sectionId === 'admin-section') {
+          lastSection = currentSection;
+        }
+        currentSection = sectionId;
+        loader.classList.remove('active');
+      }, 300);
+    }
+
+    function filterCatalog() {
+      const searchValue = document.getElementById('catalog-search').value.toLowerCase();
+      const cards = document.querySelectorAll('#catalog-section .offer-card');
+      cards.forEach(card => {
+        const name = card.querySelector('.offer-name').textContent.toLowerCase();
+        card.style.display = name.includes(searchValue) ? 'block' : 'none';
+      });
     }
 
     function openDetail(itemId) {
@@ -1066,182 +1219,4 @@
         description = 'Стальная арматура диаметром 12 мм, хранится на складе. Используется в строительстве, ожидается повышение спроса.';
       } else if (itemId === 'balka20') {
         name = 'Балка 20'; steel = '09Г2С'; status = 'На хранении';
-        volume = '4 т'; buyPrice = '75 000 ₽/т'; sellPrice = '82 500 ₽/т';
-        purchaseDate = '05.01.2025'; estSellDate = '≈8 недель';
-        description = 'Стальная двутавровая балка №20, хранится на складе. Предполагается рост цены с началом строительного сезона.';
-      }
-      document.getElementById('detail-name').firstChild.textContent = name + ' ';
-      document.getElementById('detail-steel').textContent = steel;
-      document.getElementById('detail-status').textContent = status;
-      document.getElementById('detail-volume').textContent = 'Объем: ' + volume;
-      document.getElementById('detail-buyprice').textContent = 'Цена закупа: ' + buyPrice;
-      document.getElementById('detail-sellprice').textContent = 'Ожидаемая цена продажи: ' + sellPrice;
-      document.getElementById('detail-purchase-date').textContent = 'Дата покупки: ' + purchaseDate;
-      document.getElementById('detail-estimated-date').textContent = (status === 'Продано') ? ('Дата продажи: ' + estSellDate) : ('Ожидаемая дата продажи: ' + estSellDate);
-      document.getElementById('detail-description').textContent = description;
-      showSection('detail-section');
-    }
-
-    function backFromDetail() {
-      document.getElementById('detail-section').style.display = 'none';
-      document.getElementById(lastSection).style.display = 'block';
-      currentSection = lastSection;
-    }
-
-    function switchCameraTab(tab) {
-      const myBtn = document.getElementById('cam-tab-my');
-      const allBtn = document.getElementById('cam-tab-all');
-      const myList = document.getElementById('cameras-my');
-      const allList = document.getElementById('cameras-all');
-      if (tab === 'my') {
-        myBtn.classList.add('active'); allBtn.classList.remove('active');
-        myList.style.display = 'block'; allList.style.display = 'none';
-      } else {
-        myBtn.classList.remove('active'); allBtn.classList.add('active');
-        myList.style.display = 'none'; allList.style.display = 'block';
-      }
-    }
-
-    function switchPortfolioTab(tab) {
-      const allTab = document.getElementById('portfolio-tab-all');
-      const actTab = document.getElementById('portfolio-tab-active');
-      const compTab = document.getElementById('portfolio-tab-completed');
-      const listAll = document.getElementById('portfolio-list-all');
-      const listActive = document.getElementById('portfolio-list-active');
-      const listCompleted = document.getElementById('portfolio-list-completed');
-      if (tab === 'all') {
-        allTab.classList.add('active'); actTab.classList.remove('active'); compTab.classList.remove('active');
-        listAll.style.display = 'block'; listActive.style.display = 'none'; listCompleted.style.display = 'none';
-      } else if (tab === 'active') {
-        allTab.classList.remove('active'); actTab.classList.add('active'); compTab.classList.remove('active');
-        listAll.style.display = 'none'; listActive.style.display = 'block'; listCompleted.style.display = 'none';
-      } else if (tab === 'completed') {
-        allTab.classList.remove('active'); actTab.classList.remove('active'); compTab.classList.add('active');
-        listAll.style.display = 'none'; listActive.style.display = 'none'; listCompleted.style.display = 'block';
-      }
-    }
-
-    function backFromNotifications() {
-      document.getElementById('notifications-section').style.display = 'none';
-      document.getElementById(lastSection).style.display = 'block';
-      currentSection = lastSection;
-    }
-
-    function markAllRead() {
-      const notifs = document.querySelectorAll('.notification-item.unread');
-      notifs.forEach(item => item.classList.remove('unread'));
-    }
-
-    function openSupport() {
-      alert('Поддержка: функция в разработке');
-    }
-
-    function openPersonalData() {
-      alert('Личные данные: функция в разработке');
-    }
-
-    function logout() {
-      alert('Выход из аккаунта');
-    }
-
-    function loginAdmin() {
-      const password = document.getElementById('admin-password').value;
-      if (password === ADMIN_PASSWORD) {
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-content').style.display = 'block';
-      } else {
-        alert('Неверный пароль');
-      }
-    }
-
-    function calculateGrowthProfit(buyPrice, sellPrice) {
-      const growth = ((sellPrice - buyPrice) / buyPrice * 100).toFixed(1);
-      const profit = (sellPrice - buyPrice).toLocaleString();
-      return `Прирост: ${growth}% • Ожидаемая прибыль: ~${profit} ₽/т`;
-    }
-
-    document.getElementById('pipe-sell-price').addEventListener('input', () => {
-      const buyPrice = parseFloat(document.getElementById('pipe-buy-price').value) || 0;
-      const sellPrice = parseFloat(document.getElementById('pipe-sell-price').value) || 0;
-      document.getElementById('pipe-growth-profit').textContent = calculateGrowthProfit(buyPrice, sellPrice);
-    });
-
-    function addPipe() {
-      const name = document.getElementById('pipe-name').value;
-      const buyPrice = document.getElementById('pipe-buy-price').value;
-      const sellPrice = document.getElementById('pipe-sell-price').value;
-      const availability = document.getElementById('pipe-availability').value;
-      const term = document.getElementById('pipe-term').value;
-      if (name && buyPrice && sellPrice && availability && term) {
-        pipes.push({ name, buyPrice, sellPrice, availability, term });
-        alert(`Труба добавлена: ${name}, Закуп: ${buyPrice} ₽/т, Продажа: ${sellPrice} ₽/т, Доступно: ${availability} т, Срок: ${term}`);
-        clearPipeForm();
-      } else {
-        alert('Заполните все поля');
-      }
-    }
-
-    function deletePipe() {
-      const name = document.getElementById('pipe-name').value;
-      if (name) {
-        const index = pipes.findIndex(pipe => pipe.name === name);
-        if (index !== -1) {
-          pipes.splice(index, 1);
-          alert(`Труба удалена: ${name}`);
-          clearPipeForm();
-        } else {
-          alert('Труба не найдена');
-        }
-      } else {
-        alert('Введите название трубы для удаления');
-      }
-    }
-
-    function clearPipeForm() {
-      document.getElementById('pipe-name').value = '';
-      document.getElementById('pipe-buy-price').value = '';
-      document.getElementById('pipe-sell-price').value = '';
-      document.getElementById('pipe-availability').value = '';
-      document.getElementById('pipe-term').value = '';
-      document.getElementById('pipe-growth-profit').textContent = '';
-    }
-
-    function addCamera() {
-      const name = document.getElementById('camera-name').value;
-      const desc = document.getElementById('camera-desc').value;
-      if (name) {
-        cameras.push({ name, desc });
-        alert(`Камера добавлена: ${name}${desc ? ' – ' + desc : ''}`);
-        clearCameraForm();
-      } else {
-        alert('Введите название камеры');
-      }
-    }
-
-    function deleteCamera() {
-      const name = document.getElementById('camera-name').value;
-      if (name) {
-        const index = cameras.findIndex(camera => camera.name === name);
-        if (index !== -1) {
-          cameras.splice(index, 1);
-          alert(`Камера удалена: ${name}`);
-          clearCameraForm();
-        } else {
-          alert('Камера не найдена');
-        }
-      } else {
-        alert('Введите название камеры для удаления');
-      }
-    }
-
-    function clearCameraForm() {
-      document.getElementById('camera-name').value = '';
-      document.getElementById('camera-desc').value = '';
-    }
-
-    function openCamera(camId) {
-      alert(`Открытие камеры: ${camId} (функция в разработке)`);
-    }
-  </script>
-</body>
-</html>
+        volume = '4 т'; buyPrice = '75
