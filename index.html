@@ -12,41 +12,92 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- JSZip for creating zip files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Inter:wght@400;500;700&family=Tinos:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Inter font for consistent styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Tinos:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .preview-container { border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.1); transform-origin: top center; margin-bottom: 1rem; background: white; }
-        .id-card-container { width: 3.375in; height: 2.125in; font-family: 'Roboto', sans-serif; }
-        .receipt-container, .schedule-container { width: 8.5in; min-height: 11in; font-family: 'Tinos', serif; padding: 0.75in; }
+        /* General styling for preview containers */
+        .preview-container {
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transform-origin: top center;
+            margin-bottom: 1rem;
+            background: white;
+            border-radius: 0.5rem; /* Added rounded corners */
+        }
+        /* Specific dimensions for ID card */
+        .id-card-container {
+            width: 3.375in; /* Standard ID card width */
+            height: 2.125in; /* Standard ID card height */
+            font-family: 'Inter', sans-serif; /* Using Inter font */
+        }
+        /* Specific dimensions for receipt and schedule (scaled for preview) */
+        .receipt-container, .schedule-container {
+            width: 8.5in; /* Letter paper width */
+            min-height: 11in; /* Letter paper height */
+            font-family: 'Tinos', serif; /* Using Tinos font for these documents */
+            padding: 0.75in;
+        }
+        /* Tailwind-like classes for form elements */
         .form-label { @apply block text-sm font-medium text-gray-700 mb-1; }
         .form-input { @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm; }
         .modern-button { @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50; }
-        .spinner { border: 2px solid #f3f3f3; border-top: 2px solid #4F46E5; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .image-container { position: relative; }
-        .image-container .spinner-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; }
+        /* Spinner animation */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3); /* Lighter border for contrast */
+            border-top: 3px solid #4F46E5; /* Indigo top border */
+            border-radius: 50%;
+            width: 20px; /* Slightly larger spinner */
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Overlay for images during loading */
+        .image-container {
+            position: relative;
+            /* Ensures proper stacking context for spinner overlay */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-container .spinner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.7); /* Semi-transparent white overlay */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem; /* Match parent rounded corners */
+        }
     </style>
 </head>
-<body class="font-sans bg-gray-100 min-h-screen flex items-start justify-center p-4">
+<body class="font-inter bg-gray-100 min-h-screen flex items-start justify-center p-4">
     <div class="flex flex-col lg:flex-row bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-screen-2xl">
         <!-- Left Panel: Edit Area -->
-        <div class="w-full lg:w-1/3 p-6 md:p-8 border-r border-gray-200 overflow-y-auto" style="max-height: 95vh;">
+        <div class="w-full lg:w-1/3 p-6 md:p-8 border-r border-gray-200 overflow-y-auto rounded-l-lg" style="max-height: 95vh;">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Document Generator</h2>
             <div id="form-container" class="space-y-4">
-                 <div><label class="form-label">College Name:</label>
-                    <input type="text" id="college_name" class="form-input" list="college_list" placeholder="Select or type a college name">
+                 <div>
+                    <label for="college_name" class="form-label">College Name:</label>
+                    <input type="text" id="college_name" class="form-input rounded-md" list="college_list" placeholder="Select or type a college name">
                     <datalist id="college_list"></datalist>
                  </div>
-                 <button id="generate_button" class="modern-button w-full mt-4">
-                    <span class="button-text">✨ Сгенерировать все документы с AI</span>
+                 <button id="generate_button" class="modern-button w-full mt-4 rounded-md">
+                    <span class="button-text">✨ Generate All Documents with AI</span>
                  </button>
-                 <button id="download_zip_button" class="modern-button w-full mt-2 hidden bg-green-600 hover:bg-green-700">
-                    📦 Скачать все (.zip)
+                 <button id="download_zip_button" class="modern-button w-full mt-2 hidden bg-green-600 hover:bg-green-700 rounded-md">
+                    📦 Download All (.zip)
                  </button>
             </div>
         </div>
 
         <!-- Right Panel: Live Previews -->
-        <div class="w-full lg:w-2/3 p-6 md:p-8 flex flex-col items-center justify-start bg-gray-50 overflow-y-auto" style="max-height: 95vh;">
+        <div class="w-full lg:w-2/3 p-6 md:p-8 flex flex-col items-center justify-start bg-gray-50 overflow-y-auto rounded-r-lg" style="max-height: 95vh;">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Live Previews</h2>
             
             <div class="w-full grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -56,105 +107,168 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-lg mb-2">Data File (info.txt)</h3>
-                    <pre id="info_txt_preview" class="bg-gray-100 p-4 rounded-md text-xs whitespace-pre-wrap h-48"></pre>
+                    <pre id="info_txt_preview" class="bg-gray-100 p-4 rounded-md text-xs whitespace-pre-wrap h-48 overflow-auto font-mono"></pre>
                 </div>
             </div>
             
             <div class="w-full mt-6">
                 <h3 class="font-bold text-lg mb-2">Fee Receipt</h3>
+                <!-- Scaled down for preview, consider a zoom feature for better readability -->
                 <div id="receiptPreview" class="preview-container receipt-container" style="transform: scale(0.5);"></div>
             </div>
 
             <div class="w-full mt-6">
                 <h3 class="font-bold text-lg mb-2">Class Schedule</h3>
+                <!-- Scaled down for preview, consider a zoom feature for better readability -->
                 <div id="schedulePreview" class="preview-container schedule-container" style="transform: scale(0.5);"></div>
             </div>
         </div>
     </div>
     
     <script>
+        // Define arrays for generating random data
         const maleFirstNames = ["Aarav", "Vihaan", "Aditya", "Arjun", "Sai", "Reyansh", "Ayaan", "Krishna", "Ishaan", "Rohan"];
         const lastNames = ["Sharma", "Verma", "Gupta", "Singh", "Kumar", "Patel", "Shah", "Khan", "Malhotra", "Chopra"];
         const programmes = ["B.Pharmacy", "D.Pharmacy", "B.Tech in CS", "B.Com (Honours)", "B.A. in English"];
         const colleges = ["Indian Institute of Technology Bombay", "University of Delhi", "Banaras Hindu University", "Vellore Institute of Technology", "Jadavpur University"];
+        
+        // Object to store all generated data
         let generatedData = {};
 
-        // --- TEMPLATES ---
+        // --- DOCUMENT TEMPLATES ---
         const templates = {
             id_card_front_html: `
-                <div style="font-family: 'Roboto', sans-serif; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0.2rem; border: 1px solid #ddd; background: white;">
+                <div style="font-family: 'Inter', sans-serif; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0.2rem; border: 1px solid #ddd; background: white;">
                     <header class="flex items-center text-center border-b-2 border-gray-300 pb-1">
-                        <div class="h-10 w-10 image-container"><img id="card_logo" src="https://placehold.co/50x50/E0E7FF/4F46E5?text=LOGO" class="h-10 w-10 object-contain"></div>
+                        <div class="h-10 w-10 image-container rounded-md"><img id="card_logo" src="https://placehold.co/50x50/E0E7FF/4F46E5?text=LOGO" class="h-10 w-10 object-contain rounded-md" alt="College Logo"></div>
                         <div class="flex-grow px-1"><h1 id="card_collegeName" class="font-black text-xs uppercase text-blue-900 leading-tight"></h1></div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/1200px-Emblem_of_India.svg.png" class="h-10 w-10 object-contain">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/1200px-Emblem_of_India.svg.png" class="h-10 w-10 object-contain rounded-md" alt="Emblem of India">
                     </header>
                     <main class="flex-grow flex items-center pt-2">
-                        <div class="w-1/3 text-center"><div class="w-20 h-24 mx-auto bg-gray-200 rounded-md overflow-hidden border-2 border-blue-900 image-container"><img id="card_photo" src="https://placehold.co/80x96/BFDBFE/4338CA?text=Photo" class="w-full h-full object-cover"></div></div>
-                        <div class="w-2/3 text-[0.55rem] pl-2"><div class="space-y-1">
-                            <div><p class="font-bold text-gray-500 uppercase">Enroll. No.</p><p id="card_enrollment" class="font-semibold text-[0.6rem]"></p></div>
-                            <div><p class="font-bold text-gray-500 uppercase">Name</p><p id="card_name" class="font-bold text-sm"></p></div>
-                            <div><p class="font-bold text-gray-500 uppercase">Programme</p><p id="card_programme" class="font-semibold text-[0.6rem]"></p></div>
-                            <div class="grid grid-cols-2">
-                                <div><p class="font-bold text-gray-500 uppercase">D.O.B</p><p id="card_dob" class="font-semibold text-[0.6rem]"></p></div>
-                                <div><p class="font-bold text-gray-500 uppercase">Valid Thru</p><p id="card_validThru" class="font-semibold text-[0.6rem]"></p></div>
+                        <div class="w-1/3 text-center">
+                            <div class="w-20 h-24 mx-auto bg-gray-200 rounded-md overflow-hidden border-2 border-blue-900 image-container">
+                                <img id="card_photo" src="https://placehold.co/80x96/BFDBFE/4338CA?text=Photo" class="w-full h-full object-cover rounded-md" alt="Student Photo">
                             </div>
-                        </div></div>
+                        </div>
+                        <div class="w-2/3 text-[0.55rem] pl-2">
+                            <div class="space-y-1">
+                                <div><p class="font-bold text-gray-500 uppercase">Enroll. No.</p><p id="card_enrollment" class="font-semibold text-[0.6rem]"></p></div>
+                                <div><p class="font-bold text-gray-500 uppercase">Name</p><p id="card_name" class="font-bold text-sm"></p></div>
+                                <div><p class="font-bold text-gray-500 uppercase">Programme</p><p id="card_programme" class="font-semibold text-[0.6rem]"></p></div>
+                                <div class="grid grid-cols-2">
+                                    <div><p class="font-bold text-gray-500 uppercase">D.O.B</p><p id="card_dob" class="font-semibold text-[0.6rem]"></p></div>
+                                    <div><p class="font-bold text-gray-500 uppercase">Valid Thru</p><p id="card_validThru" class="font-semibold text-[0.6rem]"></p></div>
+                                </div>
+                            </div>
+                        </div>
                     </main>
                 </div>`,
             receipt_html: `
-                <div style="position: relative;" class="receipt-content">
-                    <header class="text-center mb-6"><img id="receipt_logo" src="" class="h-24 w-24 mx-auto mb-4 object-contain"><h1 id="receipt_collegeName" class="text-3xl font-bold"></h1></header>
-                    <div class="text-center mb-6"><h2 class="text-xl font-bold inline-block px-4 py-1 border-2 border-black">FEE RECEIPT</h2></div>
-                    <div class="flex justify-between mb-4 text-sm"><div><strong>Date:</strong> <span id="receipt_date_val"></span></div></div>
-                    <table class="w-full text-sm border-collapse border border-black mb-4">
+                <div style="position: relative;" class="receipt-content font-tinos">
+                    <header class="text-center mb-6">
+                        <img id="receipt_logo" src="" class="h-24 w-24 mx-auto mb-4 object-contain rounded-md" alt="College Logo">
+                        <h1 id="receipt_collegeName" class="text-3xl font-bold"></h1>
+                    </header>
+                    <div class="text-center mb-6">
+                        <h2 class="text-xl font-bold inline-block px-4 py-1 border-2 border-black rounded-md">FEE RECEIPT</h2>
+                    </div>
+                    <div class="flex justify-between mb-4 text-sm">
+                        <div><strong>Date:</strong> <span id="receipt_date_val"></span></div>
+                    </div>
+                    <table class="w-full text-sm border-collapse border border-black mb-4 rounded-md overflow-hidden">
                         <tr><td class="w-1/3 border border-black p-2"><strong>Enrollment No.:</strong></td><td id="receipt_enrollment_val" class="border border-black p-2"></td></tr>
                         <tr><td class="border border-black p-2"><strong>Student Name:</strong></td><td id="receipt_name_val" class="border border-black p-2"></td></tr>
                     </table>
-                    <table class="w-full text-sm border-collapse border border-black mb-4">
-                        <thead><tr><th class="border border-black p-2 bg-gray-100">Particulars</th><th class="border border-black p-2 bg-gray-100 text-right">Amount (INR)</th></tr></thead>
-                        <tbody><tr><td class="border border-black p-2">Tuition & Other Fees</td><td class="border border-black p-2 text-right">85500.00</td></tr></tbody>
-                        <tfoot><tr><td class="font-bold border border-black p-2">Total Amount Paid</td><td class="font-bold border border-black p-2 text-right">85500.00</td></tr></tfoot>
+                    <table class="w-full text-sm border-collapse border border-black mb-4 rounded-md overflow-hidden">
+                        <thead>
+                            <tr>
+                                <th class="border border-black p-2 bg-gray-100">Particulars</th>
+                                <th class="border border-black p-2 bg-gray-100 text-right">Amount (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-black p-2">Tuition & Other Fees</td>
+                                <td class="border border-black p-2 text-right">85500.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="font-bold border border-black p-2">Total Amount Paid</td>
+                                <td class="font-bold border border-black p-2 text-right">85500.00</td>
+                            </tr>
+                        </tfoot>
                     </table>
-                    <div class="flex justify-end pt-20"><div class="text-center"><p class="border-t border-black pt-1 font-bold">Authorised Signatory</p></div></div>
+                    <div class="flex justify-end pt-20">
+                        <div class="text-center">
+                            <p class="border-t border-black pt-1 font-bold">Authorised Signatory</p>
+                        </div>
+                    </div>
                 </div>`,
             schedule_html: `
-                <div class="receipt-content">
-                    <header class="text-center mb-6 pb-4 border-b-2 border-black"><img id="schedule_logo" src="" class="h-20 w-20 mx-auto mb-2 object-contain"><h1 id="schedule_collegeName" class="text-2xl font-bold"></h1></header>
-                    <div class="text-center mb-6"><h2 class="text-xl font-bold">CLASS SCHEDULE</h2></div>
+                <div class="receipt-content font-tinos">
+                    <header class="text-center mb-6 pb-4 border-b-2 border-black">
+                        <img id="schedule_logo" src="" class="h-20 w-20 mx-auto mb-2 object-contain rounded-md" alt="College Logo">
+                        <h1 id="schedule_collegeName" class="text-2xl font-bold"></h1>
+                    </header>
+                    <div class="text-center mb-6">
+                        <h2 class="text-xl font-bold">CLASS SCHEDULE</h2>
+                    </div>
                     <div class="flex justify-between mb-4 text-sm">
                         <div><strong>Student Name:</strong> <span id="schedule_name_val"></span></div>
                         <div><strong>Enrollment No.:</strong> <span id="schedule_enrollment_val"></span></div>
                     </div>
-                    <div class="flex justify-between mb-4 text-sm"><div><strong>Semester:</strong> <span>Fall Semester ${new Date().getFullYear()}</span></div><div><strong>Date of Issue:</strong> <span id="schedule_date_val"></span></div></div>
-                    <table class="w-full text-sm border-collapse border border-black mb-4">
-                        <thead><tr><th class="border border-black p-2 bg-gray-100">COURSE CODE</th><th class="border border-black p-2 bg-gray-100">COURSE NAME</th></tr></thead>
+                    <div class="flex justify-between mb-4 text-sm">
+                        <div><strong>Semester:</strong> <span>Fall Semester ${new Date().getFullYear()}</span></div>
+                        <div><strong>Date of Issue:</strong> <span id="schedule_date_val"></span></div>
+                    </div>
+                    <table class="w-full text-sm border-collapse border border-black mb-4 rounded-md overflow-hidden">
+                        <thead>
+                            <tr>
+                                <th class="border border-black p-2 bg-gray-100">COURSE CODE</th>
+                                <th class="border border-black p-2 bg-gray-100">COURSE NAME</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr><td class="border border-black p-2">PH-101</td><td class="border border-black p-2">Advanced Pharmaceutics</td></tr>
                             <tr><td class="border border-black p-2">PC-202</td><td class="border border-black p-2">Medicinal Chemistry I</td></tr>
                             <tr><td class="border border-black p-2">BT-301</td><td class="border border-black p-2">Biotechnology</td></tr>
                         </tbody>
                     </table>
-                     <div class="flex justify-end pt-20"><div class="text-center"><p class="border-t border-black pt-1 font-bold">Authorised Signatory</p></div></div>
+                     <div class="flex justify-end pt-20">
+                        <div class="text-center">
+                            <p class="border-t border-black pt-1 font-bold">Authorised Signatory</p>
+                        </div>
+                    </div>
                 </div>`
         };
 
+        // DOMContentLoaded event listener to initialize the application
         document.addEventListener('DOMContentLoaded', () => {
+            // Populate document templates into preview areas
             document.getElementById('idCardPreview-front').innerHTML = templates.id_card_front_html;
             document.getElementById('receiptPreview').innerHTML = templates.receipt_html;
             document.getElementById('schedulePreview').innerHTML = templates.schedule_html;
             
+            // Populate the college datalist for auto-completion
             const datalist = document.getElementById('college_list');
             colleges.forEach(college => {
                 const option = document.createElement('option');
                 option.value = college;
                 datalist.appendChild(option);
             });
+
+            // Add event listeners to buttons
             document.getElementById('generate_button').addEventListener('click', generateAll);
             document.getElementById('download_zip_button').addEventListener('click', downloadAllAsZip);
         });
 
+        /**
+         * Updates all document previews with the provided data.
+         * @param {Object} data - The generated student data.
+         */
         function updateAllPreviews(data) {
-            // Update ID Card
+            // Update ID Card details
             document.getElementById('card_collegeName').textContent = data.college;
             document.getElementById('card_name').textContent = data.name;
             document.getElementById('card_enrollment').textContent = data.enrollment;
@@ -162,136 +276,210 @@
             document.getElementById('card_dob').textContent = data.dob;
             document.getElementById('card_validThru').textContent = data.validThru;
             if (data.photoUrl) document.getElementById('card_photo').src = data.photoUrl;
-            if (data.logoUrl) document.getElementById('card_logo').src = data.logoUrl;
+            if (data.logoUrl) {
+                document.getElementById('card_logo').src = data.logoUrl;
+                document.getElementById('receipt_logo').src = data.logoUrl;
+                document.getElementById('schedule_logo').src = data.logoUrl;
+            }
 
             // Update TXT preview
-            const txtContent = `College: ${data.college}\nName: ${data.name}\nDOB: ${data.dob}`;
+            const txtContent = `College: ${data.college}\nName: ${data.name}\nDOB: ${data.dob}\nProgramme: ${data.programme}\nEnrollment No.: ${data.enrollment}\nValid Thru: ${data.validThru}`;
             document.getElementById('info_txt_preview').textContent = txtContent;
 
-            // Update Receipt
+            // Update Receipt details
             const today = new Date().toISOString().slice(0, 10);
             document.getElementById('receipt_collegeName').textContent = data.college;
             document.getElementById('receipt_name_val').textContent = data.name;
             document.getElementById('receipt_enrollment_val').textContent = data.enrollment;
             document.getElementById('receipt_date_val').textContent = today;
-            if (data.logoUrl) document.getElementById('receipt_logo').src = data.logoUrl;
 
-            // Update Schedule
+            // Update Schedule details
             document.getElementById('schedule_collegeName').textContent = data.college;
             document.getElementById('schedule_name_val').textContent = data.name;
             document.getElementById('schedule_enrollment_val').textContent = data.enrollment;
             document.getElementById('schedule_date_val').textContent = today;
-            if (data.logoUrl) document.getElementById('schedule_logo').src = data.logoUrl;
         }
         
-        function getRandomElement(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        /**
+         * Returns a random element from an array.
+         * @param {Array} arr - The input array.
+         * @returns {*} A random element from the array.
+         */
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
+        /**
+         * Generates all student documents (ID card, receipt, schedule) with AI-generated images.
+         */
         async function generateAll() {
-            const button = document.getElementById('generate_button');
-            const buttonText = button.querySelector('.button-text');
-            button.disabled = true;
-            buttonText.textContent = "Генерация данных...";
+            const generateButton = document.getElementById('generate_button');
+            const buttonText = generateButton.querySelector('.button-text');
+            generateButton.disabled = true;
+            buttonText.textContent = "Generating Data...";
             
+            // Get college name from input or select a random one
             let college = document.getElementById('college_name').value;
             if (!college || !colleges.includes(college)) {
                 college = getRandomElement(colleges);
-                document.getElementById('college_name').value = college;
+                document.getElementById('college_name').value = college; // Update input with selected college
             }
+
+            // Generate random student data
             const name = `${getRandomElement(maleFirstNames)} ${getRandomElement(lastNames)}`;
             const programme = getRandomElement(programmes);
             const currentYear = new Date().getFullYear();
-            const birthYear = currentYear - (19 + Math.floor(Math.random() * 7));
+            const birthYear = currentYear - (19 + Math.floor(Math.random() * 7)); // Student age between 19-25
             const dob = `${birthYear}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`;
-            const endYear = currentYear + Math.floor(Math.random() * 3) + 1;
-            const enrollment = `${college.split(' ').map(w => w[0]).join('')}/${endYear}/${Math.floor(100 + Math.random() * 900)}`;
-            const validThru = `08/${endYear}`;
+            const endYear = currentYear + Math.floor(Math.random() * 3) + 1; // Valid for 1-3 years
+            const enrollment = `${college.split(' ').map(w => w[0]).join('')}/${endYear}/${String(Math.floor(100 + Math.random() * 900)).padStart(3, '0')}`;
+            const validThru = `08/${endYear}`; // Valid until August of endYear
 
             generatedData = { college, name, enrollment, programme, dob, validThru };
-            updateAllPreviews(generatedData);
+            updateAllPreviews(generatedData); // Update previews with text data first
 
-            const photoContainer = document.getElementById('card_photo').parentElement;
-            const logoContainer = document.getElementById('card_logo').parentElement;
+            const cardPhotoElement = document.getElementById('card_photo');
+            const cardLogoElement = document.getElementById('card_logo');
+            const photoContainer = cardPhotoElement.parentElement;
+            const logoContainer = cardLogoElement.parentElement;
             
-            const photoSpinner = document.createElement('div');
-            photoSpinner.className = 'spinner-overlay';
-            photoSpinner.innerHTML = `<div class="spinner"></div>`;
-            photoContainer.appendChild(photoSpinner);
-            buttonText.textContent = "Генерация фото...";
-            const photoUrl = await generateAiImage(`A professional, passport-style ID card photo of a young Indian male student named ${name}. Neutral expression, plain light-colored background.`);
+            // Add spinner for photo generation
+            const photoSpinnerOverlay = document.createElement('div');
+            photoSpinnerOverlay.className = 'spinner-overlay';
+            photoSpinnerOverlay.innerHTML = `<div class="spinner"></div>`;
+            photoContainer.appendChild(photoSpinnerOverlay);
+            buttonText.textContent = "Generating Photo...";
+
+            // Generate student photo using AI
+            const photoPrompt = `A high-quality, professional, passport-style ID card photo of a young Indian male student named ${name}. Neutral expression, light gray background, clear face, shoulders visible.`;
+            const photoUrl = await generateAiImage(photoPrompt);
             if (photoUrl) generatedData.photoUrl = photoUrl;
-            photoSpinner.remove();
+            cardPhotoElement.src = generatedData.photoUrl || cardPhotoElement.src; // Update photo or keep placeholder
+            photoSpinnerOverlay.remove();
 
-            const logoSpinner = document.createElement('div');
-            logoSpinner.className = 'spinner-overlay';
-            logoSpinner.innerHTML = `<div class="spinner"></div>`;
-            logoContainer.appendChild(logoSpinner);
-            buttonText.textContent = "Генерация логотипа...";
-            const logoUrl = await generateAiImage(`A simple, modern, professional logo for an educational institution named '${college}'. The logo should be a clean vector-style emblem, suitable for an official ID card, on a white background.`);
+            // Add spinner for logo generation
+            const logoSpinnerOverlay = document.createElement('div');
+            logoSpinnerOverlay.className = 'spinner-overlay';
+            logoSpinnerOverlay.innerHTML = `<div class="spinner"></div>`;
+            logoContainer.appendChild(logoSpinnerOverlay);
+            buttonText.textContent = "Generating Logo...";
+
+            // Generate college logo using AI
+            const logoPrompt = `A simple, modern, professional vector-style emblem logo for an educational institution named '${college}'. The logo should be clean, abstract, and suitable for an official ID card and documents, on a white background.`;
+            const logoUrl = await generateAiImage(logoPrompt);
             if (logoUrl) generatedData.logoUrl = logoUrl;
-            logoSpinner.remove();
+            cardLogoElement.src = generatedData.logoUrl || cardLogoElement.src; // Update logo or keep placeholder
 
-            updateAllPreviews(generatedData);
+            // Also update receipt and schedule logos
+            document.getElementById('receipt_logo').src = generatedData.logoUrl || document.getElementById('receipt_logo').src;
+            document.getElementById('schedule_logo').src = generatedData.logoUrl || document.getElementById('schedule_logo').src;
+            logoSpinnerOverlay.remove();
+
+            updateAllPreviews(generatedData); // Final update after images are loaded
             
-            button.disabled = false;
-            buttonText.textContent = "✨ Сгенерировать все документы с AI";
+            generateButton.disabled = false;
+            buttonText.textContent = "✨ Generate All Documents with AI";
             document.getElementById('download_zip_button').classList.remove('hidden');
         }
 
+        /**
+         * Generates an AI image from a given prompt with exponential backoff for retries.
+         * @param {string} prompt - The text prompt for image generation.
+         * @returns {Promise<string|null>} A promise that resolves to the base64 image URL or null on failure.
+         */
         async function generateAiImage(prompt) {
-             const payload = { instances: [{ prompt }], parameters: { "sampleCount": 1} };
-             const apiKey = "";
-             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-            try {
-                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
-                const result = await response.json();
-                if (result.predictions?.[0]?.bytesBase64Encoded) {
-                    return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+            const payload = { instances: [{ prompt }], parameters: { "sampleCount": 1} };
+            const apiKey = ""; // The environment provides this API key. DO NOT change this.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+            
+            const maxRetries = 5;
+            let retryDelay = 1000; // Start with 1 second delay
+
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        // If it's a server error or rate limit, retry
+                        if (response.status >= 500 || response.status === 429) {
+                            console.warn(`Attempt ${i + 1} failed for "${prompt}". Retrying in ${retryDelay / 1000}s...`);
+                            await new Promise(res => setTimeout(res, retryDelay));
+                            retryDelay *= 2; // Exponential backoff
+                            continue; // Go to next retry attempt
+                        } else {
+                            // Client-side errors or other unrecoverable errors
+                            throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+                        }
+                    }
+
+                    const result = await response.json();
+                    if (result.predictions?.[0]?.bytesBase64Encoded) {
+                        return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    }
+                    throw new Error("No image data in API response.");
+
+                } catch(error) {
+                    console.error(`Error generating image for prompt "${prompt}" (Attempt ${i + 1}/${maxRetries}):`, error);
+                    // If it's the last attempt or a non-retryable error, rethrow or return null
+                    if (i === maxRetries - 1 || !(error.message.includes('API request failed with status'))) {
+                        return null; // Return null after max retries or unrecoverable error
+                    }
+                    await new Promise(res => setTimeout(res, retryDelay));
+                    retryDelay *= 2; // Exponential backoff
                 }
-                throw new Error("No image data in API response.");
-            } catch(error) {
-                console.error(`Error generating image for prompt "${prompt}":`, error);
-                return null;
             }
+            console.error(`Failed to generate image for prompt "${prompt}" after ${maxRetries} attempts.`);
+            return null; // Return null if all retries fail
         }
 
+        /**
+         * Downloads all generated documents as a single ZIP file.
+         */
         async function downloadAllAsZip() {
-            const button = document.getElementById('download_zip_button');
-            button.textContent = "Packaging...";
-            button.disabled = true;
+            const downloadButton = document.getElementById('download_zip_button');
+            downloadButton.textContent = "Packaging...";
+            downloadButton.disabled = true;
             
             const zip = new JSZip();
             
-            // 1. Add TXT file
-            const txtContent = `College: ${generatedData.college}\nName: ${generatedData.name}\nDOB: ${generatedData.dob}`;
-            zip.file("info.txt", txtContent);
+            // 1. Add TXT file to the zip
+            const txtContent = `College: ${generatedData.college}\nName: ${generatedData.name}\nDOB: ${generatedData.dob}\nProgramme: ${generatedData.programme}\nEnrollment No.: ${generatedData.enrollment}\nValid Thru: ${generatedData.validThru}`;
+            zip.file("student_info.txt", txtContent);
 
-            // 2. Add ID Card Front PNG
+            // 2. Add ID Card Front as PNG to the zip
+            // Scaling up for better quality in the downloaded image
             const idCanvas = await html2canvas(document.getElementById('idCardPreview-front'), { scale: 3, useCORS: true });
             zip.file("ID_Card_Front.png", idCanvas.toDataURL("image/png").split(',')[1], {base64: true});
             
-            // 3. Add Receipt PDF
+            // 3. Add Fee Receipt as PDF to the zip
             const receiptCanvas = await html2canvas(document.getElementById('receiptPreview'), { scale: 3, useCORS: true });
             const receiptImgData = receiptCanvas.toDataURL('image/png');
+            // Create a new jsPDF instance for the receipt
             const receiptPdf = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             receiptPdf.addImage(receiptImgData, 'PNG', 0, 0, receiptPdf.internal.pageSize.getWidth(), receiptPdf.internal.pageSize.getHeight());
             zip.file("Fee_Receipt.pdf", await receiptPdf.output('blob'));
 
-            // 4. Add Schedule PDF
+            // 4. Add Class Schedule as PDF to the zip
             const scheduleCanvas = await html2canvas(document.getElementById('schedulePreview'), { scale: 3, useCORS: true });
             const scheduleImgData = scheduleCanvas.toDataURL('image/png');
+            // Create a new jsPDF instance for the schedule
             const schedulePdf = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             schedulePdf.addImage(scheduleImgData, 'PNG', 0, 0, schedulePdf.internal.pageSize.getWidth(), schedulePdf.internal.pageSize.getHeight());
             zip.file("Class_Schedule.pdf", await schedulePdf.output('blob'));
 
-            // Generate and download ZIP
+            // Generate the ZIP file and trigger download
             zip.generateAsync({type:"blob"}).then(function(content) {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
                 link.download = `Student_Documents_${generatedData.name.replace(/ /g, '_')}.zip`;
                 link.click();
-                button.textContent = "📦 Скачать все (.zip)";
-                button.disabled = false;
+                // Reset button text and state
+                downloadButton.textContent = "📦 Download All (.zip)";
+                downloadButton.disabled = false;
             });
         }
     </script>
